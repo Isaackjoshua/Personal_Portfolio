@@ -1,0 +1,110 @@
+---
+title: "Safety Lives in the Action Set, Not the Prompt"
+description: "Building an LLM agent that repairs real machines, and why the list of things it can do matters more than the instructions telling it what not to."
+date: "2025-09-27"
+tags: ["Agents", "LLM", "Architecture"]
+draft: false
+---
+
+The first version of any agent that touches a real system tends to be built the same way: give the model a broad capability, then write a paragraph of instructions telling it what not to do with that capability.
+
+It works in testing. It works because the model is agreeable and the test cases are the ones you thought of. Then something arrives that you did not think of, the paragraph turns out to be a suggestion rather than a constraint, and you discover that your safety model was a piece of prose.
+
+Building [Triage](/projects/triage) — an agent that diagnoses faulty computers, applies fixes, and hands the rest to a human — pushed me to the opposite arrangement. The prompt describes the job. The action set defines what is possible. Those are different mechanisms, and only one of them holds under pressure.
+
+## Prompts express intent; interfaces express limits
+
+An instruction like *"do not run destructive commands"* has to be interpreted at inference time, every time, by a system whose behaviour is statistical. It is a strong prior. It is not a guarantee, and it degrades exactly when you would most like it not to: long contexts, unusual inputs, an error message that looks like an instruction.
+
+Compare that with not exposing a destructive command in the first place. There is no interpretation step. There is no phrasing that unlocks it. The capability is absent from the space the model is choosing within, and absence is not something a clever input can talk its way around.
+
+This is the core move, and it is almost embarrassingly simple: **if the agent must never do X, the agent should not have a tool that does X.**
+
+## What a bounded action looks like
+
+Once safety lives in the interface, actions stop being "run this shell command" and become narrow, declared operations with a known blast radius.
+
+```python title="actions/disk.py"
+from dataclasses import dataclass
+
+from triage.actions import Action, Risk, Result
+
+
+@dataclass
+class CheckDiskHealth(Action):
+    """Read SMART attributes. Reports only — changes nothing."""
+
+    name = "check_disk_health"
+    risk = Risk.READ_ONLY
+
+    def run(self) -> Result:
+        report = smart.read_all()
+        return Result(
+            ok=report.healthy,
+            summary=f"SMART {report.status}, {report.used_percent}% used",
+            evidence=report.raw,
+        )
+```
+
+Three properties matter here, and none of them are about the model.
+
+The action **declares its own risk level**. That is data the dispatcher can act on, rather than a judgement the model is trusted to make about itself.
+
+The action **returns evidence**. Whatever conclusion the agent reaches traces back to output that a command actually produced, so a human reviewing the session can check the reasoning against the machine rather than against the narration.
+
+The action **does one thing**. A tool called `run_command` has an unbounded risk profile because its risk depends entirely on its argument. A tool called `check_disk_health` has a risk profile you can write down once.
+
+## The dispatcher decides, not the model
+
+With risk declared per action, the gate becomes ordinary code sitting between the model's choice and the machine:
+
+```python title="dispatch.py"
+def dispatch(action: Action, scope: Risk) -> Result:
+    if action.risk > scope:
+        return Result.escalate(
+            reason=f"{action.name} exceeds the {scope.name} scope",
+            requires="human operator",
+        )
+    return action.run()
+```
+
+That comparison is the entire safety boundary, and it has properties the prompt version never had. It is deterministic. It is testable without invoking a model at all. It fails closed — an action with an unrecognised risk level does not run. And when it refuses, it refuses for a reason you can print.
+
+Note what it is *not* doing: it is not trying to detect a jailbreak, classify intent, or decide whether this particular request seems reasonable. Those are all judgement calls, and judgement calls are the thing we are trying to move out of the hot path.
+
+## Escalation is a feature, not a failure
+
+The instinct when building an autonomous system is to treat every escalation as a gap in coverage — something to be engineered away in the next version.
+
+For anything that touches hardware, that instinct is wrong. A failing drive, a swollen battery, bad RAM: these are not problems the agent should be trying to solve, and an agent that quietly decided to try would be a worse product, not a more capable one.
+
+So escalation is a first-class outcome with its own output format:
+
+- what was checked, and what the check returned
+- what the evidence points at
+- why it is outside the automated scope
+- what a person should look at first
+
+<Callout>
+An agent that escalates well is more useful than an agent that escalates rarely. The human on the other end is not receiving a failure — they are receiving a completed diagnosis with the manual step clearly identified.
+</Callout>
+
+## Transport-agnostic by the same logic
+
+The same separation that keeps actions bounded also keeps the core portable. The diagnostic engine does not know how it was invoked. It receives a request, selects actions, dispatches them through the risk gate, and returns a structured report.
+
+Whether that request arrived from a local CLI or over some remote channel is somebody else's concern. That is partly an architecture preference, but it is also a safety property: a core that cannot tell how it was reached cannot have a code path that is more permissive when reached a particular way.
+
+## The general shape
+
+The pattern generalises well past machine diagnostics, and it is worth stating without the domain attached:
+
+1. Enumerate what the agent may do. If it is not enumerated, it does not exist.
+2. Attach a declared risk level to each capability, as data.
+3. Gate on that level in ordinary code, outside the model.
+4. Make "hand this to a human" a well-formed output rather than an error.
+5. Require evidence for conclusions, so the reasoning is auditable after the fact.
+
+The prompt still matters. It shapes the quality of the diagnosis, the order things get checked in, how the findings are explained. That is real work and it deserves attention.
+
+But it is not where safety lives. Safety lives in the list of things the agent is able to do at all — and that list is written in code, by you, in advance.

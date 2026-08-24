@@ -1,0 +1,87 @@
+---
+title: "Shipping Models Past the Notebook"
+description: "A model that scores well is not a system. Here is what actually has to exist around it before anyone can use the thing."
+date: "2025-06-18"
+tags: ["ML Engineering", "Deployment"]
+draft: false
+---
+
+There is a moment in every model project where the notebook says you are done. The validation curve has flattened, the confusion matrix looks reasonable, and the last cell prints a number you are happy with. It feels like the end of the work.
+
+It is closer to a third of it.
+
+The gap between a model that scores well and a system somebody can use is not a deployment step you bolt on at the end. It is a set of decisions that should have been made before training started, and every one of them changes what you train.
+
+## The notebook hides your dependencies
+
+A notebook is a machine with a very large amount of implicit state. The data is already loaded. The paths are absolute and point at your disk. The preprocessing happened four cells ago and you have edited it twice since. The model object exists in memory with a shape nobody wrote down.
+
+None of that survives contact with a second machine. The first honest test of a model is not accuracy — it is whether a fresh process on a different computer can produce the same prediction from the same input.
+
+That test usually fails, and it fails on preprocessing. Somebody resized with a different interpolation. The normalisation constants lived in a cell that got deleted. The channel order flipped. The model is fine; the thing feeding it is not the thing that fed it during training.
+
+So the first piece of real engineering is to make preprocessing a shared artefact rather than a habit:
+
+```python title="preprocess.py"
+from dataclasses import dataclass
+
+import numpy as np
+
+
+@dataclass(frozen=True)
+class PreprocessConfig:
+    """Serialised alongside the model weights. Training and inference both
+    load this, so neither can quietly drift from the other."""
+
+    size: tuple[int, int] = (224, 224)
+    mean: tuple[float, ...] = (0.485, 0.456, 0.406)
+    std: tuple[float, ...] = (0.229, 0.224, 0.225)
+    channel_order: str = "rgb"
+
+
+def apply(image: np.ndarray, config: PreprocessConfig) -> np.ndarray:
+    image = resize(image, config.size)
+    if config.channel_order == "rgb":
+        image = image[..., ::-1]
+    image = image.astype(np.float32) / 255.0
+    return (image - np.array(config.mean)) / np.array(config.std)
+```
+
+The point is not the dataclass. The point is that the config ships with the weights, and inference reads it rather than reimplementing it. Once that is true, an entire category of "works on my machine" bug stops existing.
+
+## Decide where it runs before you decide what it is
+
+The most consequential choice in a model project is usually the deployment target, and it is usually made last — which is backwards, because it constrains everything upstream.
+
+If the answer is a GPU server you control, you have enormous freedom. If the answer is a phone in a clinic with no reliable connectivity, the architecture menu shrinks immediately, the export path becomes a hard requirement rather than a nice-to-have, and quantisation stops being an optimisation and becomes part of the design.
+
+I have written about the on-device case [in more detail elsewhere](/blog/onnx-on-device-inference-tanzania), but the general rule holds regardless of target: pick the runtime first, then pick a model that can live inside it. Training a model you cannot export is not a head start. It is rework you have not noticed yet.
+
+A useful discipline is to write the inference entry point before you train anything. It will be four lines and it will be wrong, but it forces you to name the runtime, the input contract, and the output contract on day one.
+
+## The interface is part of the model
+
+A classifier returns a probability distribution. A system has to return a decision, and somewhere between the two, someone has to choose a threshold.
+
+That choice is not a modelling detail. It encodes what you believe about the relative cost of the two ways of being wrong, and it belongs to whoever owns that cost — not to whoever happens to be writing the inference wrapper. In screening contexts, a false negative and a false positive are not remotely the same event, and a default of `argmax` silently asserts that they are.
+
+The same applies to what happens below the threshold. A system that returns a confident answer for every input, including inputs unlike anything in training, is a system that will eventually be confidently wrong in front of a user who has no way to tell. An explicit abstain path — return uncertainty, ask for a human — costs very little to build and changes the failure mode from "wrong answer" to "no answer", which is almost always the better failure.
+
+## What has to exist around the weights
+
+Once the model is exportable and the interface is decided, the remaining work is unglamorous and non-optional:
+
+- **A versioned artefact.** Weights, preprocessing config, class labels, and the export metadata, bundled together with a version string. If you cannot tell which model produced a given prediction six months from now, you cannot debug it.
+- **A smoke test with a fixed input.** One image, one expected output, checked on every build. It catches export regressions that accuracy metrics never will, because it compares the deployed path against itself rather than against a dataset.
+- **A way to see what it did.** Logging inputs is often impossible for privacy reasons; logging the shape of the decision usually is not. Prediction distribution over time will tell you about drift long before anybody files a complaint.
+- **A rollback.** Model updates are deploys. Treat them like deploys.
+
+None of that improves the metric. All of it decides whether the metric ever reaches a user.
+
+## The reframe
+
+The habit worth building is to stop asking "is the model good enough?" and start asking "what has to be true for someone to rely on this?"
+
+Those questions have different answers, and only the second one has an end state you can ship. The first has no natural stopping point — there is always another half a point of accuracy available if you are willing to keep tuning, and chasing it is a very comfortable way to avoid the harder work of making the thing real.
+
+The model is the part everybody talks about. It is rarely the part that decides whether the project works.

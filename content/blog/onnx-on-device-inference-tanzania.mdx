@@ -1,0 +1,95 @@
+---
+title: "Designing Out the Network: ONNX and On-Device Inference"
+description: "Exporting PyTorch to ONNX for offline inference on Android, and why connectivity is the first assumption worth removing."
+date: "2025-08-02"
+tags: ["ML Engineering", "ONNX", "Mobile"]
+draft: false
+---
+
+Most inference architectures start with an implicit assumption: there is a network, and there is a server on the other end of it. It is such a comfortable assumption that it usually goes unstated, which is exactly what makes it dangerous. Assumptions you never write down are assumptions you never test.
+
+For a screening tool meant to run in a clinic, that assumption does not hold. Connectivity is intermittent, and "intermittent" is worse than "absent" — absent forces you to design for it, intermittent lets you pretend you have solved the problem right up until the moment somebody needs the tool and it spins.
+
+So the constraint is worth stating plainly and early: **the model runs on the device, and a network connection is never required for a prediction.** Every other decision follows from that sentence.
+
+## What the constraint actually costs
+
+Moving inference on-device is not free, and it is worth being honest about the bill before committing.
+
+You lose the ability to update the model by pushing to a server. You lose access to arbitrary compute — the model has to fit in the memory of a mid-range phone and return an answer fast enough that a person does not put the phone down. You lose the tidy separation where the training environment and the inference environment are both Python.
+
+What you get in return is a tool that works. In a setting where the alternative is a spinner, that trade is not close.
+
+## PyTorch is the training format, not the shipping format
+
+PyTorch is excellent for research iteration and a poor thing to ship to a phone. The export target that actually travels is ONNX: a graph format with runtimes on effectively every platform, including a mature Android runtime.
+
+The export itself is short, which misleads people into thinking it is simple:
+
+```python title="export.py"
+import torch
+
+model.eval()
+
+dummy = torch.randn(1, 3, 224, 224)
+
+torch.onnx.export(
+    model,
+    dummy,
+    "model.onnx",
+    input_names=["input"],
+    output_names=["logits"],
+    dynamic_axes={"input": {0: "batch"}, "logits": {0: "batch"}},
+    opset_version=17,
+    do_constant_folding=True,
+)
+```
+
+The two lines that matter most are the least interesting ones. `model.eval()` switches dropout and batch-norm into inference behaviour; forget it and you export a graph that produces different answers on identical inputs, which is a genuinely miserable bug to chase. `dynamic_axes` decides whether the exported graph accepts anything other than the exact shape you traced with — omit it and you have quietly hard-coded a batch size of one into the artefact.
+
+## Export is a tracing operation, and tracing has opinions
+
+The thing to internalise about ONNX export is that it records a graph by running your model once. It captures the operations that executed for that particular input. It does not capture your Python.
+
+Which means control flow that depends on tensor values disappears. A branch that did not run during tracing is not in the graph. A loop whose length depended on an input gets unrolled to whatever length it happened to be. A tensor shape you computed with `.item()` becomes a constant.
+
+The practical consequence is that model code written for export looks slightly different from model code written for research. Shape arithmetic stays symbolic. Data-dependent branching moves out of the forward pass and into the calling code, where it can be expressed as ordinary logic on the runtime side rather than baked into a graph.
+
+<Callout>
+Verify the export rather than trusting it. Run the same input through the PyTorch model and the ONNX runtime and compare outputs numerically. Small floating-point differences are expected; anything larger means the graph is not the model you think it is.
+</Callout>
+
+```python title="verify.py"
+import numpy as np
+import onnxruntime as ort
+
+session = ort.InferenceSession("model.onnx", providers=["CPUExecutionProvider"])
+
+reference = model(dummy).detach().numpy()
+exported = session.run(None, {"input": dummy.numpy()})[0]
+
+np.testing.assert_allclose(reference, exported, rtol=1e-3, atol=1e-5)
+```
+
+That assertion belongs in CI. It is the smoke test that catches an export regression before it reaches a phone, and it costs a couple of seconds.
+
+## Preprocessing is where offline systems break
+
+Once the graph is on the device, the runtime is the easy part. ONNX Runtime loads the file and returns tensors. The failure mode that actually shows up is the same one that shows up everywhere in applied ML: the preprocessing on the device does not match the preprocessing during training.
+
+On a server this is a Python-to-Python problem, which is forgiving. On a phone the training pipeline is Python and the inference pipeline is Dart or Kotlin, and every resize, colour conversion and normalisation has to be reimplemented in a different language with different library defaults.
+
+Two things help more than anything else:
+
+- **Ship the preprocessing parameters as data, not as code.** Mean, standard deviation, target size, channel order and interpolation mode go in a small config file that both sides read. Neither side gets to hold an opinion.
+- **Test with a fixed reference image.** Put one image and its expected output in the repository. Run it through the full device path, not just the model. If the number matches, the pipelines agree; if it does not, you know which side to look at before you have shipped anything.
+
+## Folding the constraint back into the model
+
+Designing out the network changes what you train, which is the point of deciding it first.
+
+The size budget is real, so architectures get chosen partly on parameter count. Quantisation stops being an afterthought and becomes part of the plan, which means it is worth evaluating a quantised model rather than assuming the drop is negligible. Batch size is one, forever, so any technique that only pays off in batches is not a technique you have.
+
+None of this is a compromise if you decided it up front. It is only a compromise when you train a large model first and then go looking for a way to squeeze it onto a device — at which point every option available to you is a bad one.
+
+The reframe is small and it changes the whole project: on-device is not the last mile. It is the specification.
