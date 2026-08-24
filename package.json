@@ -2,7 +2,10 @@
   "name": "isaack-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Personal developer portfolio for Isaack Joshua Lukumay — ML engineer & software developer.",
+  "engines": {
+    "node": ">=20"
+  },
+  "description": "Personal developer portfolio for Isaack Joshua Lukumay \u2014 ML engineer & software developer.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
