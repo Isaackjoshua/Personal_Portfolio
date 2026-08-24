@@ -32,7 +32,7 @@ export function ClosingCta() {
 
           <div className="relative grid gap-10 p-7 sm:p-10 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-12">
             <div>
-              <p className="eyebrow">// open channel</p>
+              <p className="eyebrow">{"// open channel"}</p>
               <h2 className="mt-4 text-2xl sm:text-3xl text-gradient">
                 Have something that needs to work in production?
               </h2>

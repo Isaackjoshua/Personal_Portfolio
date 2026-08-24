@@ -22,10 +22,13 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close the drawer on navigation.
-  useEffect(() => {
+  // Close the drawer on navigation. Adjusting state during render is the
+  // supported pattern here — an effect would cause a cascading re-render.
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
     setOpen(false);
-  }, [pathname]);
+  }
 
   // Lock the page behind the open drawer.
   useEffect(() => {

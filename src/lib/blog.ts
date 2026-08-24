@@ -129,8 +129,16 @@ function allPosts(): Post[] {
   return cache;
 }
 
-function toMeta({ content: _content, ...meta }: Post): PostMeta {
-  return meta;
+function toMeta(post: Post): PostMeta {
+  return {
+    slug: post.slug,
+    title: post.title,
+    description: post.description,
+    date: post.date,
+    tags: post.tags,
+    readingTime: post.readingTime,
+    draft: post.draft,
+  };
 }
 
 /** Published posts, newest first. Drafts excluded. */

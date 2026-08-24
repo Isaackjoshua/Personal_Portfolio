@@ -79,7 +79,7 @@ export default function ExperiencePage() {
             />
             <div className="relative flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-md">
-                <p className="eyebrow">// cv</p>
+                <p className="eyebrow">{"// cv"}</p>
                 <h2 className="mt-4 text-2xl text-gradient sm:text-3xl">
                   The full record, on one page
                 </h2>

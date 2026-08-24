@@ -26,15 +26,18 @@ export function TypingTagline({
   const reduced = useReducedMotion();
   const [typed, setTyped] = useState(0);
 
+  // Restart the animation if the text itself changes. Adjusting state during
+  // render avoids the cascading re-render an effect would cause.
+  const [source, setSource] = useState(text);
+  if (source !== text) {
+    setSource(text);
+    setTyped(0);
+  }
+
   useEffect(() => {
-    if (reduced) {
-      setTyped(text.length);
-      return;
-    }
+    if (reduced) return;
 
     let index = 0;
-    setTyped(0);
-
     const interval = window.setInterval(() => {
       index += 1;
       setTyped(index);
@@ -44,7 +47,9 @@ export function TypingTagline({
     return () => window.clearInterval(interval);
   }, [reduced, speed, text]);
 
-  const done = typed >= text.length;
+  // Reduced motion skips the animation entirely and renders the full string.
+  const visible = reduced ? text.length : typed;
+  const done = visible >= text.length;
 
   return (
     <div
@@ -62,7 +67,7 @@ export function TypingTagline({
       </span>
 
       <span aria-hidden className="absolute inset-0 block">
-        <span className="text-accent">{text.slice(0, typed)}</span>
+        <span className="text-accent">{text.slice(0, visible)}</span>
         <span
           className={cn(
             "ml-0.5 inline-block h-[0.95em] w-[0.5em] translate-y-[0.12em] bg-accent/80",

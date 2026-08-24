@@ -41,7 +41,6 @@ export function ContactForm({ className }: { className?: string }) {
     register,
     handleSubmit,
     reset,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
@@ -55,7 +54,10 @@ export function ContactForm({ className }: { className?: string }) {
     },
   });
 
-  const messageLength = (watch("message") ?? "").length;
+  // The counter is tracked locally rather than through `watch()`, so the whole
+  // form does not re-render on every keystroke.
+  const [messageLength, setMessageLength] = useState(0);
+  const messageField = register("message");
 
   const onSubmit = handleSubmit(async (values) => {
     setStatus("idle");
@@ -83,6 +85,7 @@ export function ContactForm({ className }: { className?: string }) {
       }
 
       reset();
+      setMessageLength(0);
       setStatus("success");
     } catch {
       setErrorMessage(
@@ -95,6 +98,7 @@ export function ContactForm({ className }: { className?: string }) {
   function startOver() {
     setStatus("idle");
     setErrorMessage("");
+    setMessageLength(0);
     reset();
   }
 
@@ -259,7 +263,11 @@ export function ContactForm({ className }: { className?: string }) {
               }
               className={fieldClass(Boolean(errors.message), "resize-y")}
               disabled={isSubmitting}
-              {...register("message")}
+              {...messageField}
+              onChange={(event) => {
+                void messageField.onChange(event);
+                setMessageLength(event.target.value.length);
+              }}
             />
             {errors.message && (
               <p id="contact-message-error" className={errorClass}>

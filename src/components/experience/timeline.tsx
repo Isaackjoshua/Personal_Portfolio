@@ -86,7 +86,7 @@ export function Timeline({
             {role.highlights.length > 0 && (
               <>
                 <p className="mt-6 font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-faint">
-                  // selected work
+                  {"// selected work"}
                 </p>
                 <ul className="mt-2.5 max-w-2xl space-y-2.5 rounded-xl border border-line-soft bg-surface/40 p-4 sm:p-5">
                   {role.highlights.map((highlight) => (
