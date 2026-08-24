@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Isaack Joshua Lukumay — CV</title>
+<style>
+  @page { size: A4; margin: 14mm 15mm 13mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body {
+    margin: 0;
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 9.6pt;
+    line-height: 1.5;
+    color: #16181d;
+  }
+  a { color: #0b7a55; text-decoration: none; }
+
+  .name {
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", "Courier New", monospace;
+    font-size: 20pt;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    margin: 0;
+    color: #0b0c0f;
+  }
+  .role {
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 9.4pt;
+    color: #0b7a55;
+    margin: 3px 0 0;
+    letter-spacing: 0.4px;
+  }
+  .contact {
+    margin: 8px 0 0;
+    font-size: 8.8pt;
+    color: #4a4f58;
+  }
+  .contact span { white-space: nowrap; }
+  .contact .sep { color: #c3c8d0; margin: 0 7px; }
+
+  .rule { height: 2px; background: #0b7a55; margin: 11px 0 0; }
+  .rule.thin { height: 1px; background: #dfe3e8; margin: 0; }
+
+  h2 {
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 8.6pt;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: #0b0c0f;
+    margin: 15px 0 7px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #dfe3e8;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .lead { margin: 10px 0 0; color: #33383f; }
+
+  .entry { margin-top: 9px; break-inside: avoid; }
+  .entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .entry-title { font-size: 10.4pt; font-weight: 700; margin: 0; color: #0b0c0f; }
+  .entry-sub { font-size: 9pt; color: #4a4f58; margin: 1px 0 0; }
+  .entry-org { font-size: 9pt; color: #16181d; margin: 2px 0 0; font-weight: 600; }
+  .period {
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 8.4pt; color: #6a707a; white-space: nowrap;
+  }
+  ul { margin: 6px 0 0; padding-left: 14px; }
+  li { margin: 2.5px 0; }
+  li::marker { color: #0b7a55; }
+
+  .stack {
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 8pt; color: #5a6069; margin-top: 5px;
+  }
+
+  .proj { margin-top: 8px; break-inside: avoid; }
+  .proj-name { font-weight: 700; color: #0b0c0f; }
+  .proj-sum { color: #33383f; }
+
+  .skills { margin-top: 4px; break-inside: avoid; }
+  .skill-row { display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid #eef1f4; break-inside: avoid; }
+  .skill-row:last-child { border-bottom: 0; }
+  .skill-cat {
+    flex: 0 0 34mm;
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 8.2pt; color: #0b7a55; padding-top: 1px;
+  }
+  .skill-list { flex: 1; color: #33383f; }
+
+  .two { display: flex; gap: 16px; break-inside: avoid; }
+  .two > div { flex: 1; }
+
+  .foot {
+    margin-top: 14px; padding-top: 7px; border-top: 1px solid #dfe3e8;
+    font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+    font-size: 7.6pt; color: #8b919a; display: flex; justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <h1 class="name">ISAACK JOSHUA LUKUMAY</h1>
+    <p class="role">Machine Learning Engineer &middot; Software Developer</p>
+    <p class="contact">
+      <span>Dar es Salaam, Tanzania</span><span class="sep">|</span>
+      <span><a href="mailto:isaackjoshua23@gmail.com">isaackjoshua23@gmail.com</a></span><span class="sep">|</span>
+      <span>+255 761 638 781</span><span class="sep">|</span>
+      <span><a href="https://github.com/Isaackjoshua">github.com/Isaackjoshua</a></span><span class="sep">|</span>
+      <span><a href="https://linkedin.com/in/isaack-joshua">linkedin.com/in/isaack-joshua</a></span>
+    </p>
+    <div class="rule"></div>
+  </header>
+
+  <section>
+    <h2>Profile</h2>
+    <p class="lead">
+      Machine learning engineer and software developer who builds end-to-end systems &mdash; not just models.
+      Work spans ML/AI, backend engineering, cross-platform desktop applications and mobile, with a consistent
+      focus on getting systems into real use: offline and on-device inference, explicit safety boundaries, and
+      modular architecture that survives a second use case. Final-year Computer Science student at St. Joseph
+      University in Tanzania and machine learning intern at the Emerging Technologies for Healthcare Lab, MUHAS.
+    </p>
+  </section>
+
+  <section>
+    <h2>Experience</h2>
+    <div class="entry">
+      <div class="entry-head">
+        <div>
+          <p class="entry-title">Machine Learning Intern</p>
+          <p class="entry-sub">Industrial Practical Training</p>
+        </div>
+        <span class="period">March 2025 &mdash; Present</span>
+      </div>
+      <p class="entry-org">Emerging Technologies for Healthcare (ETH) Lab, Muhimbili University of Health and Allied Sciences (MUHAS) &mdash; Dar es Salaam, Tanzania</p>
+      <ul>
+        <li>Designed and deployed <strong>Mwana AI</strong>, a breast cancer ultrasound classifier (PyTorch, ONNX, Flutter) built for offline use in clinics.</li>
+        <li>Built a CNN-based TB/HIV co-infection detection system with Grad-CAM explainability.</li>
+        <li>Led multi-institution data extraction for a respiratory disease study across Aga Khan, Warwick and NTLP.</li>
+        <li>Assisted in fine-tuning the RETFound foundation model for diabetic retinopathy detection.</li>
+        <li>Applied transfer learning to cardiac imaging for dilated cardiomyopathy prediction.</li>
+        <li>Designed data preprocessing pipelines for medical imaging and audio datasets.</li>
+      </ul>
+      <p class="stack">PyTorch &middot; ONNX &middot; Flutter &middot; Grad-CAM &middot; Transfer learning &middot; Medical imaging</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Selected Projects</h2>
+
+    <div class="proj">
+      <p style="margin:0"><span class="proj-name">Lyceum</span> &mdash; <span class="proj-sum">cross-platform desktop app that turns any LLM into a structured, interactive tutor. Vendor-agnostic: users bring their own key and choose Claude, GPT, Kimi or a local open-weight model.</span></p>
+      <p class="stack">Electron &middot; TypeScript &middot; React &middot; Multi-LLM &nbsp;|&nbsp; github.com/Isaackjoshua/Lyceum</p>
+    </div>
+
+    <div class="proj">
+      <p style="margin:0"><span class="proj-name">Triage</span> &mdash; <span class="proj-sum">transport-agnostic AI agent that autonomously diagnoses faulty computers, applies safe software fixes, and escalates hardware or high-risk issues to a human operator.</span></p>
+      <p class="stack">Python &middot; LLM tool-use &middot; System diagnostics &nbsp;|&nbsp; github.com/Isaackjoshua/Triage</p>
+    </div>
+
+    <div class="proj">
+      <p style="margin:0"><span class="proj-name">Afya-Predict</span> &mdash; <span class="proj-sum">modular AI platform predicting disease outbreaks in Tanzania from health-facility, climate and mobility data, surfacing early-warning signals for public-health decision-makers.</span></p>
+      <p class="stack">Python &middot; Machine Learning &middot; Epidemiological modelling &nbsp;|&nbsp; github.com/Isaackjoshua/Afya_Predict</p>
+    </div>
+
+    <div class="proj">
+      <p style="margin:0"><span class="proj-name">Amana</span> &mdash; <span class="proj-sum">multisignature escrow platform securing mobile money for small merchants and gig workers across East Africa. Full transaction lifecycle in PostgreSQL with atomicity guarantees; OWASP-guided FastAPI service deployed behind nginx.</span></p>
+      <p class="stack">Python &middot; FastAPI &middot; PostgreSQL &middot; Celery &middot; Selcom API &nbsp;|&nbsp; github.com/Isaackjoshua/Escrow</p>
+    </div>
+
+    <div class="proj">
+      <p style="margin:0"><span class="proj-name">Mwana AI</span> &mdash; <span class="proj-sum">ultrasound image classifier for breast cancer screening, exported to ONNX for on-device inference with a Flutter Android front end, designed for low-resource clinical settings.</span></p>
+      <p class="stack">Python &middot; PyTorch &middot; HuggingFace &middot; ONNX Runtime &middot; Flutter &nbsp;|&nbsp; github.com/Isaackjoshua/breast_cancer_ai</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Technical Skills</h2>
+    <div class="skills">
+      <div class="skill-row"><div class="skill-cat">Languages &amp; Tools</div><div class="skill-list">Python, TypeScript, Git/GitHub, Linux, nginx, Streamlit, Electron</div></div>
+      <div class="skill-row"><div class="skill-cat">Machine Learning</div><div class="skill-list">Deep learning, transfer learning, model fine-tuning, ONNX export, on-device inference, LLM tool-use, agentic systems</div></div>
+      <div class="skill-row"><div class="skill-cat">Frameworks</div><div class="skill-list">PyTorch, TensorFlow/Keras, HuggingFace Transformers, Scikit-learn, FastAPI, Celery, React</div></div>
+      <div class="skill-row"><div class="skill-cat">Computer Vision</div><div class="skill-list">Image preprocessing, augmentation, segmentation, classification, Grad-CAM explainability</div></div>
+      <div class="skill-row"><div class="skill-cat">Data</div><div class="skill-list">Data cleaning, EDA, feature engineering, PostgreSQL, data visualisation</div></div>
+      <div class="skill-row"><div class="skill-cat">Mobile &amp; Desktop</div><div class="skill-list">Flutter (Android), Electron (cross-platform desktop)</div></div>
+    </div>
+  </section>
+
+  <div class="two">
+    <div>
+      <section>
+        <h2>Education</h2>
+        <div class="entry" style="margin-top:7px">
+          <div class="entry-head">
+            <p class="entry-title" style="font-size:9.8pt">BSc (Hons) Computer Science</p>
+            <span class="period">2023 &mdash; 2026</span>
+          </div>
+          <p class="entry-sub">St. Joseph University in Tanzania &mdash; expected 2026</p>
+        </div>
+        <div class="entry" style="margin-top:7px">
+          <div class="entry-head">
+            <p class="entry-title" style="font-size:9.8pt">ACSEE</p>
+            <span class="period">2021 &mdash; 2023</span>
+          </div>
+          <p class="entry-sub">Kongwa Secondary School, Dodoma</p>
+        </div>
+      </section>
+    </div>
+    <div>
+      <section>
+        <h2>Languages</h2>
+        <div class="skill-row" style="margin-top:7px"><div class="skill-cat" style="flex-basis:22mm">English</div><div class="skill-list">Professional working proficiency</div></div>
+        <div class="skill-row"><div class="skill-cat" style="flex-basis:22mm">Swahili</div><div class="skill-list">Native</div></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>isaackjoshua23@gmail.com</span>
+    <span>github.com/Isaackjoshua</span>
+  </div>
+
+</body>
+</html>
