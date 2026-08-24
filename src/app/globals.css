@@ -291,7 +291,36 @@
   }
 
   /* ---- rehype-pretty-code ---- */
-  [data-rehype-pretty-code-figure] {
+  /* Autolinked headings must not read as links. */
+  .prose-terminal h2 a,
+  .prose-terminal h3 a,
+  .prose-terminal h4 a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 200ms ease;
+  }
+  .prose-terminal h2 a:hover,
+  .prose-terminal h3 a:hover,
+  .prose-terminal h4 a:hover {
+    color: var(--color-accent);
+  }
+
+  /* Inline code that rehype-pretty-code highlighted stays inside its sentence. */
+  spanfigure[data-rehype-pretty-code-figure] code {
+    display: inline;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 0.375rem;
+    padding: 0.15em 0.4em;
+    font-size: 0.875em;
+  }
+  spanfigure[data-rehype-pretty-code-figure] code > [data-line] {
+    display: inline;
+    padding-inline: 0;
+    border: 0;
+  }
+
+  figure[data-rehype-pretty-code-figure] {
     position: relative;
     margin-block: 1.75rem;
   }
@@ -311,12 +340,12 @@
     padding: 0.6rem 1rem;
   }
 
-  [data-rehype-pretty-code-title] + pre {
+  figure[data-rehype-pretty-code-figure] [data-rehype-pretty-code-title] + pre {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
   }
 
-  [data-rehype-pretty-code-figure] pre {
+  figure[data-rehype-pretty-code-figure] pre {
     overflow-x: auto;
     background: var(--color-surface) !important;
     border: 1px solid var(--color-line);
@@ -326,14 +355,14 @@
     line-height: 1.7;
   }
 
-  [data-rehype-pretty-code-figure] code {
+  figure[data-rehype-pretty-code-figure] code {
     display: grid;
     background: transparent !important;
     counter-reset: line;
     font-family: var(--font-mono);
   }
 
-  [data-rehype-pretty-code-figure] code > [data-line] {
+  figure[data-rehype-pretty-code-figure] code > [data-line] {
     padding-inline: 1rem;
     border-inline-start: 2px solid transparent;
   }
@@ -359,9 +388,30 @@
     padding: 0.1rem 0.2rem;
   }
 
-  [data-rehype-pretty-code-figure] pre::-webkit-scrollbar {
+  figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar {
     height: 8px;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   Typography plugin overrides
+
+   @tailwindcss/typography emits its rules into a later cascade layer, so a
+   layered override loses no matter how specific it is. These few rules stay
+   unlayered on purpose — unlayered CSS wins against every layer.
+--------------------------------------------------------------------------- */
+.prose-terminal code::before,
+.prose-terminal code::after {
+  content: none !important;
+}
+
+.prose-terminal :is(h1, h2, h3, h4) a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.prose-terminal :is(h1, h2, h3, h4) a:hover {
+  color: var(--color-accent);
 }
 
 /* ---------------------------------------------------------------------------

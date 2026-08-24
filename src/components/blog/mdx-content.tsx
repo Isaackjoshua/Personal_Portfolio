@@ -2,7 +2,6 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypePrettyCode, {
   type Options as PrettyCodeOptions,
 } from "rehype-pretty-code";
@@ -11,7 +10,9 @@ const prettyCodeOptions: PrettyCodeOptions = {
   theme: "github-dark-default",
   // globals.css owns the surface colour so code blocks match the site.
   keepBackground: false,
-  defaultLang: "ts",
+  // Block only — a bare string here would also highlight inline code, which
+  // wraps every `snippet` in figure markup and breaks it out of the sentence.
+  defaultLang: { block: "ts" },
 };
 
 /**
@@ -78,11 +79,10 @@ export async function MdxContent({ source }: { source: string }) {
         parseFrontmatter: false,
         mdxOptions: {
           remarkPlugins: [remarkGfm],
-          rehypePlugins: [
-            rehypeSlug,
-            [rehypePrettyCode, prettyCodeOptions],
-            [rehypeAutolinkHeadings, { behavior: "wrap" }],
-          ],
+          // rehype-slug gives every heading an id for deep linking. An
+          // autolink plugin on top of it would wrap headings in anchors, which
+          // renders them as links and fights the type treatment.
+          rehypePlugins: [rehypeSlug, [rehypePrettyCode, prettyCodeOptions]],
         },
       }}
     />

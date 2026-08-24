@@ -1,5 +1,5 @@
 import { TagLink } from "@/components/ui/tag";
-import { getAllTags } from "@/lib/blog";
+import { getAllPosts, getAllTags } from "@/lib/blog";
 
 /**
  * Link-based filtering — no client state, so the whole listing stays static.
@@ -7,6 +7,9 @@ import { getAllTags } from "@/lib/blog";
  */
 export function TagFilter({ activeSlug }: { activeSlug?: string }) {
   const tags = getAllTags();
+  // The count on "All" is the number of posts, not the number of tag
+  // applications — a post with three tags must still count once.
+  const postCount = getAllPosts().length;
 
   if (tags.length === 0) return null;
 
@@ -16,9 +19,7 @@ export function TagFilter({ activeSlug }: { activeSlug?: string }) {
         <li>
           <TagLink href="/blog" active={!activeSlug}>
             All
-            <span className="ml-1.5 text-faint">
-              {tags.reduce((total, tag) => total + tag.count, 0)}
-            </span>
+            <span className="ml-1.5 text-faint">{postCount}</span>
           </TagLink>
         </li>
         {tags.map((tag) => (
