@@ -1,10 +1,12 @@
 import {
   Brain,
+  ChartColumn,
   Database,
   Eye,
   Layers,
   Smartphone,
   Terminal,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import type { SkillGroup } from "@/lib/data/skills";
@@ -17,7 +19,9 @@ const glyphs: Record<SkillGroup["icon"], LucideIcon> = {
   layers: Layers,
   eye: Eye,
   database: Database,
+  chart: ChartColumn,
   smartphone: Smartphone,
+  users: Users,
 };
 
 /**

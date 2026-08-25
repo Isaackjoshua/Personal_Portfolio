@@ -9,7 +9,9 @@ export type SkillGroup = {
     | "layers"
     | "eye"
     | "database"
-    | "smartphone";
+    | "chart"
+    | "smartphone"
+    | "users";
   skills: string[];
 };
 
@@ -86,10 +88,29 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
   {
+    slug: "reporting",
+    title: "Reporting",
+    blurb: "A finding only counts once someone outside the team can act on it.",
+    icon: "chart",
+    skills: ["Power BI", "Microsoft Excel", "Microsoft Word", "Canva"],
+  },
+  {
     slug: "mobile-desktop",
     title: "Mobile & Desktop",
     blurb: "Shipping to the device the user already has in front of them.",
     icon: "smartphone",
     skills: ["Flutter (Android)", "Electron (cross-platform desktop)"],
+  },
+  {
+    slug: "professional",
+    title: "Professional",
+    blurb: "The parts of the work that happen between people, not in an editor.",
+    icon: "users",
+    skills: [
+      "Technical communication",
+      "Cross-team collaboration",
+      "Problem solving",
+      "Adaptability",
+    ],
   },
 ];
