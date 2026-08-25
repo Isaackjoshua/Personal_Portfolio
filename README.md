@@ -86,8 +86,6 @@ an in-memory map. That is per-instance and resets on redeploy — a durable stor
 ```
 ├── content/
 │   └── blog/                     MDX posts — the whole blog corpus
-├── docs/
-│   └── cv-source.html            Print source for the CV PDF (not served)
 ├── public/
 │   └── Isaack_Joshua_Lukumay_CV.pdf
 └── src/
@@ -183,18 +181,21 @@ A `<Callout>` component is available inside MDX for asides:
 
 ### Replacing the CV
 
-Drop the new PDF at `public/Isaack_Joshua_Lukumay_CV.pdf`. The path and filename
-are configured in `siteConfig.cv` (`src/lib/site.ts`).
+Drop the new PDF at `public/Isaack_Joshua_Lukumay_CV.pdf`, overwriting what is
+there. The path and filename are configured in `siteConfig.cv`
+(`src/lib/site.ts`), so nothing else needs changing.
 
-The bundled PDF is generated from `docs/cv-source.html`; see `docs/README.md`
-for the regeneration command. `/cv` renders the same content from the data
-modules as a print-ready page, so `Ctrl/Cmd + P → Save as PDF` also works.
+`/cv` is a separate, print-ready page rendered from the data modules rather than
+from the PDF. The two are maintained independently — if you edit the PDF, check
+`/cv` still says the same thing.
 
 ### Replacing the headshot
 
-`src/components/about/portrait-frame.tsx` currently renders a monogram
-placeholder. Add the photo at `public/isaack.jpg` and follow the comment at the
-top of that file to swap in a `next/image`.
+The photo lives at `public/isaack.jpg` and is rendered by
+`src/components/about/portrait-frame.tsx` into a 4:5 frame with `object-cover`.
+To replace it, overwrite that file — keep it portrait and at least ~1000px wide.
+Match the extension to the actual encoding (a JPEG must be `.jpg`), otherwise it
+is served under the wrong content type.
 
 ---
 
