@@ -34,22 +34,26 @@ export function TypingTagline({
     setTyped(0);
   }
 
+  // The first client render has to match the server exactly, so the reduced
+  // preference cannot change what is rendered — only how the effect below
+  // fills it in. With reduced motion the first tick writes the whole string.
   useEffect(() => {
-    if (reduced) return;
-
     let index = 0;
-    const interval = window.setInterval(() => {
-      index += 1;
-      setTyped(index);
-      if (index >= text.length) window.clearInterval(interval);
-    }, speed);
+    const step = reduced ? text.length : 1;
+
+    const interval = window.setInterval(
+      () => {
+        index = Math.min(index + step, text.length);
+        setTyped(index);
+        if (index >= text.length) window.clearInterval(interval);
+      },
+      reduced ? 0 : speed,
+    );
 
     return () => window.clearInterval(interval);
   }, [reduced, speed, text]);
 
-  // Reduced motion skips the animation entirely and renders the full string.
-  const visible = reduced ? text.length : typed;
-  const done = visible >= text.length;
+  const done = typed >= text.length;
 
   return (
     <div
@@ -67,7 +71,7 @@ export function TypingTagline({
       </span>
 
       <span aria-hidden className="absolute inset-0 block">
-        <span className="text-accent">{text.slice(0, visible)}</span>
+        <span className="text-accent">{text.slice(0, typed)}</span>
         <span
           className={cn(
             "ml-0.5 inline-block h-[0.95em] w-[0.5em] translate-y-[0.12em] bg-accent/80",

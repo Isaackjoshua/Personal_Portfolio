@@ -13,6 +13,14 @@ type RevealProps = {
   as?: "div" | "section" | "li" | "article" | "header" | "footer";
 };
 
+/**
+ * `useReducedMotion()` resolves to false during SSR and to the real preference
+ * on the client, so anything it feeds into the rendered markup will mismatch on
+ * hydration for anyone who prefers reduced motion. The `hidden` variant IS the
+ * rendered markup — framer serialises it into the inline style attribute — so it
+ * must stay constant. Only `transition`, which never reaches the server HTML,
+ * may vary by preference.
+ */
 const offset = {
   bottom: { x: 0, y: 18 },
   left: { x: -18, y: 0 },
@@ -31,16 +39,16 @@ export function Reveal({
   const MotionTag = motion[as];
 
   const variants: Variants = {
-    hidden: reduced
-      ? { opacity: 0 }
-      : { opacity: 0, ...offset[from], filter: "blur(4px)" },
+    hidden: { opacity: 0, ...offset[from], filter: "blur(4px)" },
     visible: {
       opacity: 1,
       x: 0,
       y: 0,
       filter: "blur(0px)",
       transition: {
-        duration: reduced ? 0.2 : 0.55,
+        // Reduced motion collapses the travel to an imperceptible snap rather
+        // than changing what was rendered.
+        duration: reduced ? 0.01 : 0.55,
         delay: reduced ? 0 : delay,
         ease: [0.21, 0.47, 0.32, 0.98],
       },
@@ -111,12 +119,12 @@ export function RevealItem({
     <MotionTag
       className={className}
       variants={{
-        hidden: reduced ? { opacity: 0 } : { opacity: 0, y: 16 },
+        hidden: { opacity: 0, y: 16 },
         visible: {
           opacity: 1,
           y: 0,
           transition: {
-            duration: reduced ? 0.2 : 0.5,
+            duration: reduced ? 0.01 : 0.5,
             ease: [0.21, 0.47, 0.32, 0.98],
           },
         },
