@@ -10,7 +10,7 @@ import { PageHeader, Section } from "@/components/ui/section";
 import { siteConfig } from "@/lib/site";
 
 const description =
-  "Isaack Joshua Lukumay — machine learning engineer and software developer in Dar es Salaam. Final-year computer science student, ML intern at the ETH Lab at MUHAS, building AI systems that run offline and in production.";
+  "Isaack Joshua Lukumay — machine learning engineer and software developer based in Dar es Salaam, available for remote work worldwide and open to relocation. Final-year computer science student, ML intern at the ETH Lab at MUHAS, building AI systems that run offline and in production.";
 
 export const metadata: Metadata = {
   title: "About",
@@ -97,10 +97,12 @@ export default function AboutPage() {
                 happens to this once it leaves my machine?
               </p>
               <p>
-                I work from Dar es Salaam, in English and Swahili. The problems
-                that interest me are the ones where the constraint is the
-                interesting part — small hardware, no network, a decision that
-                has to be defensible to whoever it lands on.
+                I work from Dar es Salaam, in English and Swahili. I work
+                remotely with teams in any timezone, and I am open to
+                relocating for the right role. The problems that interest me
+                are the ones where the constraint is the interesting part —
+                small hardware, no network, a decision that has to be
+                defensible to whoever it lands on.
               </p>
             </div>
           </Reveal>

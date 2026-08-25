@@ -26,7 +26,7 @@ export default function ContactPage() {
       <PageHeader
         eyebrow="contact"
         title={"Have a project in mind? Let’s talk."}
-        lead="Open to engineering roles, contract work, and collaboration — on machine learning systems, backends, or anything that has to run somewhere real. Tell me what you are building and I will reply."
+        lead="Open to engineering roles, contract work, and collaboration — on machine learning systems, backends, or anything that has to run somewhere real. I work remotely with teams in any timezone and I am open to relocating. Tell me what you are building and I will reply."
       />
 
       <Section width="wide">
@@ -49,6 +49,9 @@ export default function ContactPage() {
               </p>
               <p className="mt-4 font-mono text-xs text-faint">
                 {siteConfig.location} &middot; EAT (UTC+3)
+              </p>
+              <p className="mt-1.5 font-mono text-xs text-accent">
+                {siteConfig.availability.long}
               </p>
             </div>
           </Reveal>

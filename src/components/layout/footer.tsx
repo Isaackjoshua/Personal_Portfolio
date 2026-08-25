@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { Globe, MapPin } from "lucide-react";
 import { navItems, siteConfig } from "@/lib/site";
 import { SocialLinks } from "@/components/ui/social-links";
 
@@ -31,6 +31,10 @@ export function Footer() {
             <p className="mt-4 inline-flex items-center gap-2 font-mono text-xs text-faint">
               <MapPin className="size-3.5" strokeWidth={1.75} aria-hidden />
               {siteConfig.location}
+            </p>
+            <p className="mt-2 inline-flex items-center gap-2 font-mono text-xs text-faint">
+              <Globe className="size-3.5" strokeWidth={1.75} aria-hidden />
+              {siteConfig.availability.short}
             </p>
           </div>
 

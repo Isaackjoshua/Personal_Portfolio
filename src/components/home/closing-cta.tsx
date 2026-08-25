@@ -8,6 +8,7 @@ import { siteConfig } from "@/lib/site";
 const output = [
   "status    ▸ available for work",
   `based     ▸ ${siteConfig.location} · UTC+3`,
+  "remote    ▸ worldwide · open to relocation",
   "channels  ▸ email · github · linkedin",
   "languages ▸ English · Swahili",
 ];

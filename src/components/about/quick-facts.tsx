@@ -18,6 +18,11 @@ const facts: Fact[] = [
     meta: "East Africa Time · UTC+3",
   },
   {
+    label: "Available",
+    value: siteConfig.availability.short,
+    meta: "Remote worldwide · will relocate for the right role",
+  },
+  {
     label: "Focus",
     value: "ML/AI · Backend · Desktop · Mobile",
     meta: "Systems built for deployment, not demos",

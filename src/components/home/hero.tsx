@@ -1,4 +1,4 @@
-import { Download, MapPin } from "lucide-react";
+import { Download, Globe, MapPin } from "lucide-react";
 import { HeroBackdrop } from "@/components/ui/backdrop";
 import { ButtonLink, buttonClasses } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
@@ -23,15 +23,22 @@ export function Hero() {
       <div className="container-wide relative w-full pt-28 pb-28 sm:pt-32 sm:pb-32">
         <div className="max-w-3xl">
           <Reveal from="none">
-            <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-line bg-surface/60 px-3.5 py-1.5 font-mono text-xs text-muted">
+            <p className="inline-flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-2xl border border-line bg-surface/60 px-3.5 py-2 font-mono text-xs text-muted sm:rounded-full sm:py-1.5">
               <span className="inline-flex items-center gap-2">
                 <span className="relative flex size-1.5" aria-hidden>
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60" />
                   <span className="relative inline-flex size-1.5 rounded-full bg-accent" />
                 </span>
-                <span className="text-accent">Open to work</span>
+                <span className="text-accent">
+                  {siteConfig.availability.status}
+                </span>
               </span>
-              <span aria-hidden className="h-3 w-px bg-line" />
+              <span aria-hidden className="hidden h-3 w-px bg-line sm:inline-block" />
+              <span className="inline-flex items-center gap-1.5">
+                <Globe className="size-3.5" strokeWidth={1.75} aria-hidden />
+                {siteConfig.availability.short}
+              </span>
+              <span aria-hidden className="hidden h-3 w-px bg-line sm:inline-block" />
               <span className="inline-flex items-center gap-1.5">
                 <MapPin className="size-3.5" strokeWidth={1.75} aria-hidden />
                 {siteConfig.location}

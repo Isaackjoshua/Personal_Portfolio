@@ -46,6 +46,14 @@ export default function ExperiencePage() {
               </dt>
               <dd className="mt-1.5 text-fg">{siteConfig.location}</dd>
             </div>
+            <div>
+              <dt className="uppercase tracking-[0.14em] text-faint">
+                Available
+              </dt>
+              <dd className="mt-1.5 text-fg">
+                {siteConfig.availability.short}
+              </dd>
+            </div>
           </dl>
         )}
       </PageHeader>
