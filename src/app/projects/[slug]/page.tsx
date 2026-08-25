@@ -11,8 +11,12 @@ import { Tag } from "@/components/ui/tag";
 import { TerminalWindow } from "@/components/ui/terminal";
 import { getProject, projects } from "@/lib/data/projects";
 import { siteConfig } from "@/lib/site";
+import { jsonLd } from "@/lib/utils";
 
 type Params = { params: Promise<{ slug: string }> };
+
+// The project list is static, so anything outside it is a real 404.
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
@@ -83,7 +87,7 @@ export default async function ProjectPage({ params }: Params) {
     <article className="pb-24">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }}
       />
 
       <header className="relative overflow-hidden border-b border-line-soft">

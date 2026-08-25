@@ -9,6 +9,9 @@ import { siteConfig } from "@/lib/site";
 
 type Params = { params: Promise<{ slug: string }> };
 
+// Tags are derived from the posts, so an unknown tag is a real 404.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return getAllTags().map((tag) => ({ slug: tag.slug }));
 }

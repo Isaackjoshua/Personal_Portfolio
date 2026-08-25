@@ -4,6 +4,7 @@ import { ClosingCta } from "@/components/home/closing-cta";
 import { FeaturedWork } from "@/components/home/featured-work";
 import { Hero } from "@/components/home/hero";
 import { siteConfig } from "@/lib/site";
+import { jsonLd } from "@/lib/utils";
 
 export const metadata: Metadata = {
   description: siteConfig.description,
@@ -43,7 +44,7 @@ export default function HomePage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(personJsonLd) }}
       />
       <Hero />
       <CapabilityStrip />

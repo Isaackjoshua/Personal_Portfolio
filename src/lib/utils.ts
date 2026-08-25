@@ -27,3 +27,15 @@ export function formatDateStamp(input: string | Date) {
 export function absoluteUrl(path: string, origin: string) {
   return new URL(path, origin).toString();
 }
+
+/**
+ * Serialise a JSON-LD object for embedding in a <script> tag.
+ *
+ * JSON.stringify leaves `<` untouched, so any value containing `</script>`
+ * would close the tag and everything after it would be parsed as HTML. The
+ * inputs here are repo-controlled today; escaping keeps that from becoming an
+ * XSS hole the moment any of it comes from somewhere less trusted.
+ */
+export function jsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}

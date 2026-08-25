@@ -148,9 +148,14 @@ export function getAllPosts(): PostMeta[] {
     .map(toMeta);
 }
 
-export function getPostSlugs(): string[] {
+/**
+ * `includeDrafts` is used by generateStaticParams so draft posts are still
+ * prerendered and reachable by direct URL, even though they are absent from
+ * listings, tags and the sitemap.
+ */
+export function getPostSlugs({ includeDrafts = false } = {}): string[] {
   return allPosts()
-    .filter((post) => !post.draft)
+    .filter((post) => includeDrafts || !post.draft)
     .map((post) => post.slug);
 }
 

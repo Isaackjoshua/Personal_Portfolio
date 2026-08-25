@@ -13,11 +13,16 @@ import {
   type PostMeta,
 } from "@/lib/blog";
 import { siteConfig } from "@/lib/site";
+import { jsonLd } from "@/lib/utils";
 
 type Params = { params: Promise<{ slug: string }> };
 
+// Every post is known at build time, so an unlisted slug is a real 404
+// rather than a page rendered on demand that answers 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  return getPostSlugs().map((slug) => ({ slug }));
+  return getPostSlugs({ includeDrafts: true }).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -95,7 +100,7 @@ export default async function PostPage({ params }: Params) {
 
   const { previous, next } = getAdjacentPosts(post.slug);
 
-  const jsonLd = {
+  const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
@@ -115,7 +120,7 @@ export default async function PostPage({ params }: Params) {
     <article className="pb-24">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(articleJsonLd) }}
       />
 
       <header className="relative overflow-hidden border-b border-line-soft">
