@@ -1,4 +1,4 @@
-# isaack.dev — personal portfolio
+# isaackjoshua.com — personal portfolio
 
 The personal site of **Isaack Joshua Lukumay**, a machine learning engineer and
 software developer in Dar es Salaam, Tanzania. It is a static-first Next.js
@@ -7,7 +7,7 @@ skills and experience record, an MDX blog, and a working contact form. Content
 lives in typed data modules and MDX files in this repository — there is no CMS
 and no database.
 
-**Live:** _to be connected (Vercel)_
+**Live:** <https://isaackjoshua.com> — deployed to Cloudflare Workers.
 
 ---
 
@@ -51,6 +51,13 @@ The dev server runs at <http://localhost:3000>.
 | `npm run start` | Serve the production build (run `build` first). |
 | `npm run lint` | Run ESLint across the project. |
 | `npm run typecheck` | Run `tsc --noEmit` without building. |
+| `npm run preview` | Build the Worker and run it locally on workerd — the real production runtime. |
+| `npm run deploy` | Build the Worker and push it to Cloudflare. |
+| `npm run cf-typegen` | Regenerate `cloudflare-env.d.ts` from `wrangler.jsonc` bindings. |
+
+`npm run dev` is the fast loop; `npm run preview` is the honest one. Anything
+that behaves differently between Node and workerd shows up in `preview`, not in
+`dev`, so run it before deploying a change to the contact API.
 
 ---
 
@@ -75,9 +82,13 @@ writes the submission to the server log, and returns `200` with
 the delivery step is skipped. Set the key and messages start arriving by email
 with no code change.
 
-The endpoint also rate-limits to **3 submissions per IP per 10 minutes** using
-an in-memory map. That is per-instance and resets on redeploy — a durable store
-(Vercel KV, Upstash) is the production upgrade if abuse becomes a problem.
+The endpoint also rate-limits to **3 submissions per IP per 10 minutes**. The IP
+comes from `cf-connecting-ip`, which Cloudflare sets itself and a client cannot
+forge. The counter, however, is an in-memory map inside a single Worker isolate,
+and Cloudflare creates and discards isolates freely — so the limit stops casual
+flooding, not a determined sender. Cloudflare's rate-limiting binding or a
+Durable Object is the upgrade if abuse becomes a problem; only `rateLimit()` in
+`src/app/api/contact/route.ts` would change.
 
 ---
 
@@ -191,24 +202,106 @@ from the PDF. The two are maintained independently — if you edit the PDF, chec
 
 ### Replacing the headshot
 
-The photo lives at `public/isaack.jpg` and is rendered by
-`src/components/about/portrait-frame.tsx` into a 4:5 frame with `object-cover`.
-To replace it, overwrite that file — keep it portrait and at least ~1000px wide.
-Match the extension to the actual encoding (a JPEG must be `.jpg`), otherwise it
-is served under the wrong content type.
+The photo lives at `public/isaack.jpg` (1080×1296, exactly 4:5) and is rendered
+by `src/components/about/portrait-frame.tsx` into a 4:5 frame with
+`object-cover`. Because the source already matches the frame, nothing is
+cropped. To replace it, overwrite that file — keep it portrait at 4:5 and at
+least ~1000px wide, or the frame will trim the edges. Match the extension to the
+actual encoding (a JPEG must be `.jpg`), otherwise it is served under the wrong
+content type.
 
 ---
 
-## Deploying to Vercel
+## Deploying to Cloudflare Workers
 
-1. Push this repository to GitHub.
-2. In Vercel, **Add New → Project** and import the repository. The framework is
-   detected automatically; build command and output directory need no changes.
-3. Add the environment variables from the table above under
-   **Settings → Environment Variables**. At minimum set `NEXT_PUBLIC_SITE_URL`
-   to the production origin.
-4. Deploy. Connect a custom domain under **Settings → Domains** when ready, and
-   update `NEXT_PUBLIC_SITE_URL` to match.
+The site runs on Cloudflare Workers via
+[`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare), which compiles
+the Next.js server into a Worker (`.open-next/worker.js`) and hands the static
+files to Cloudflare's asset hosting (`.open-next/assets`) so they never invoke
+the Worker at all. Configuration lives in `wrangler.jsonc` and
+`open-next.config.ts`.
+
+### One-time setup
+
+1. **Authenticate.** `npx wrangler login` opens a browser and links the CLI to
+   your Cloudflare account.
+2. **Check it builds as a Worker.**
+
+   ```bash
+   npm run preview
+   ```
+
+   This runs the compiled Worker on workerd locally at
+   <http://localhost:8787>. It is a closer match to production than `npm run
+   dev` — if something works in `dev` and breaks here, trust `preview`.
+3. **Deploy.**
+
+   ```bash
+   npm run deploy
+   ```
+
+   The first deploy creates the Worker and prints a
+   `isaackjoshua-portfolio.<subdomain>.workers.dev` URL. Open it and confirm the
+   site loads before touching DNS.
+
+### Secrets and variables
+
+Plaintext variables can go in the Cloudflare dashboard under **Workers &
+Pages → isaackjoshua-portfolio → Settings → Variables**. Secrets must be set
+through the CLI so they are never written to a file:
+
+```bash
+npx wrangler secret put RESEND_API_KEY
+```
+
+`NEXT_PUBLIC_SITE_URL` is the exception: it is inlined into the client bundle at
+**build** time, so it has to be present when `npm run deploy` runs, not in the
+Worker's runtime environment. Put it in `.env.local` (or export it in your
+shell) before deploying. It already defaults to `https://isaackjoshua.com` in
+`src/lib/site.ts`, so you only need to set it for a staging origin.
+
+For local `npm run preview`, put runtime secrets in `.dev.vars` (git-ignored,
+same `KEY=value` format as `.env.local`).
+
+### Pointing isaackjoshua.com at the Worker
+
+The domain is registered with Cloudflare, so DNS and hosting are the same
+account and this is a two-field change:
+
+1. Confirm `isaackjoshua.com` appears under **Websites** in the Cloudflare
+   dashboard and its status is **Active**.
+2. Go to **Workers & Pages → isaackjoshua-portfolio → Settings → Domains &
+   Routes → Add → Custom domain**.
+3. Add `isaackjoshua.com`, then repeat for `www.isaackjoshua.com`.
+
+Cloudflare creates the proxied DNS records and issues the TLS certificate
+itself — there is no CNAME to copy by hand and no separate certificate step.
+Propagation is usually under a minute.
+
+To send `www` to the apex rather than serving both, add a **Redirect Rule**
+under **Rules → Redirect Rules** on the zone: match hostname
+`www.isaackjoshua.com`, dynamic redirect to
+`concat("https://isaackjoshua.com", http.request.uri.path)`, status 301.
+
+### What the Workers runtime changes
+
+- **Image optimisation is off** (`images.unoptimized` in `next.config.ts`).
+  Workers has no Node image pipeline, so `/_next/image` does not exist there.
+  The site's one raster image is ~100 KB and is edge-cached by Cloudflare, so
+  this costs nothing in practice — but adding a photo gallery would mean wiring
+  up a Cloudflare Images loader.
+- **The contact form's rate limiter is per-isolate.** See the note under
+  *Environment variables* above.
+- **`console.*` output goes to Cloudflare's dashboard**, under the Worker's
+  **Logs** tab, or live with `npx wrangler tail`.
+
+### Continuous deployment
+
+`npm run deploy` from a machine that has run `wrangler login` is enough for a
+one-person project. To deploy on push instead, add the
+[`cloudflare/wrangler-action`](https://github.com/cloudflare/wrangler-action)
+GitHub Action with a `CLOUDFLARE_API_TOKEN` repository secret, and give it
+`npm run deploy` as its command.
 
 ---
 

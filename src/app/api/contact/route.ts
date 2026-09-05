@@ -14,11 +14,12 @@ const DEFAULT_TO = "isaackjoshua23@gmail.com";
 /**
  * Timestamps of recent submissions, keyed by client IP.
  *
- * This Map lives inside one server instance: it resets on every deploy, is not
- * shared between serverless invocations in different regions, and is trivially
- * defeated by a rotating IP. It exists to stop casual flooding from a single
- * source. The production upgrade is a durable store — Upstash Redis or Vercel
- * KV — keyed exactly the same way, so only `rateLimit` below has to change.
+ * This Map lives inside one Worker isolate. Cloudflare runs many isolates and
+ * discards them freely, so the counter is per-isolate and short-lived: it stops
+ * casual flooding from one source, not a determined sender. The key itself is
+ * trustworthy (see `clientKey`), so the remaining gap is storage, not identity.
+ * The upgrade is Cloudflare's rate-limiting binding or a Durable Object, keyed
+ * the same way — only `rateLimit` below would change.
  */
 const submissionLog = new Map<string, number[]>();
 
@@ -54,8 +55,20 @@ function rateLimit(key: string): RateLimitResult {
   return { allowed: true };
 }
 
-/** First hop in `x-forwarded-for` is the client; fall back to a shared bucket. */
+/**
+ * Identifies the caller for rate limiting.
+ *
+ * `cf-connecting-ip` is set by Cloudflare's own edge on every request it
+ * proxies and cannot be forged by the client — anything a visitor sends under
+ * that name is overwritten before the Worker sees it. It is checked first for
+ * exactly that reason. The `x-forwarded-for` fallback only matters off
+ * Cloudflare (a local `next dev`), and there it *is* attacker-controlled, so
+ * it buys nothing against a determined sender.
+ */
 function clientKey(request: Request): string {
+  const cloudflareIp = request.headers.get("cf-connecting-ip")?.trim();
+  if (cloudflareIp) return cloudflareIp;
+
   const forwarded = request.headers.get("x-forwarded-for");
   if (forwarded) {
     const first = forwarded.split(",")[0].trim();

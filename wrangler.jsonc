@@ -1,0 +1,29 @@
+/**
+ * Cloudflare Workers deployment config.
+ *
+ * The Next.js app is compiled into a Worker by `@opennextjs/cloudflare`, which
+ * writes `.open-next/worker.js` (the server) and `.open-next/assets` (static
+ * files served straight from Cloudflare's edge, never touching the Worker).
+ * Both paths below point at that build output — do not edit them by hand.
+ *
+ *   npm run preview   build + run the real Worker locally on workerd
+ *   npm run deploy    build + push to Cloudflare
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "isaackjoshua-portfolio",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-05",
+  // `nodejs_compat` is required by the adapter: Next's server code reaches for
+  // node:* builtins that workerd only exposes behind this flag.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  // Streams logs to the Cloudflare dashboard, which is where the contact
+  // route's console.info/console.error output ends up in production.
+  "observability": {
+    "enabled": true
+  }
+}

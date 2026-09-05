@@ -1,0 +1,16 @@
+# Static assets are served straight off Cloudflare's edge and never reach the
+# Worker, so the security headers set in `next.config.ts` do not apply to them.
+# This file re-states them for the asset paths. Cloudflare reads it from the
+# root of the deployed asset directory; `@opennextjs/cloudflare` copies
+# everything in `public/` there verbatim.
+#
+# Keep this list in sync with `securityHeaders` in next.config.ts.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+
+# Hashed build output is immutable by construction — Next puts the content hash
+# in the filename, so a changed file is a changed URL.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

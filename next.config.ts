@@ -21,6 +21,18 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  images: {
+    /**
+     * Cloudflare Workers has no Node image-optimisation runtime, so the
+     * `/_next/image` endpoint that `next/image` would otherwise call does not
+     * exist in production. Serving the source file directly is the correct
+     * behaviour here rather than a compromise: the site has exactly one raster
+     * image (`public/isaack.jpg`, ~100 KB), and Cloudflare's CDN caches it at
+     * the edge anyway. If more or larger images ever appear, the alternative is
+     * a custom loader pointed at Cloudflare Images (a paid zone feature).
+     */
+    unoptimized: true,
+  },
   async headers() {
     return [
       {

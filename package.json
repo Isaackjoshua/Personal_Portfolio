@@ -5,13 +5,16 @@
   "engines": {
     "node": ">=20"
   },
-  "description": "Personal developer portfolio for Isaack Joshua Lukumay \u2014 ML engineer & software developer.",
+  "description": "Personal developer portfolio for Isaack Joshua Lukumay — ML engineer & software developer.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -19,7 +22,7 @@
     "framer-motion": "^13.1.1",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.34.0",
-    "next": "16.3.2",
+    "next": "16.3.4",
     "next-mdx-remote": "^6.0.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -35,14 +38,16 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.6",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.2",
+    "eslint-config-next": "16.3.4",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.129.0"
   }
 }

@@ -6,7 +6,13 @@ export const siteConfig = {
   tagline: "I build AI systems that ship — not just score.",
   description:
     "Machine learning engineer and software developer based in Dar es Salaam, available for remote work worldwide and open to relocation. I build end-to-end AI systems — offline inference, agentic tooling, and the backends that carry them into production.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://isaackjoshua.vercel.app",
+  /**
+   * Canonical origin. Feeds `metadataBase`, canonical links, Open Graph URLs,
+   * sitemap.xml and robots.txt, so it must match the domain visitors actually
+   * land on. The fallback is the production domain; override it per-environment
+   * with NEXT_PUBLIC_SITE_URL (no trailing slash).
+   */
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://isaackjoshua.com",
   location: "Dar es Salaam, Tanzania",
   /**
    * Where he can work, as opposed to where he is. Recruiters scanning the site

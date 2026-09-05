@@ -1,11 +1,11 @@
 /**
  * Headshot for the About page.
  *
- * The source file is `public/isaack.jpg` (1086×1448, 3:4). It is rendered into
- * a 4:5 frame with `object-cover`, which trims a few percent from the top and
- * bottom and leaves the subject centred. To replace the photo, drop a new file
- * at the same path — keep it portrait, at least ~1000px wide, and no lighter
- * than the current frame or it will glare against the dark page.
+ * The source file is `public/isaack.jpg` (1080×1296, exactly 4:5), so the
+ * `object-cover` frame below shows the whole photo with nothing cropped away.
+ * To replace it, drop a new file at the same path — keep it portrait at 4:5,
+ * at least ~1000px wide, and no lighter than the current frame or it will
+ * glare against the dark page.
  */
 
 import Image from "next/image";
