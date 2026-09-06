@@ -70,7 +70,7 @@ required to run the site locally** — every variable has a working fallback.
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | Canonical origin, used for `metadataBase`, canonical URLs, Open Graph tags, `sitemap.xml` and `robots.txt`. No trailing slash. | No — recommended in production |
 | `RESEND_API_KEY` | API key for [Resend](https://resend.com), which delivers contact-form submissions. | No |
-| `CONTACT_FROM_EMAIL` | `From` address on contact emails. Must be on a domain verified in Resend. Defaults to Resend's sandbox sender. | No |
+| `CONTACT_FROM_EMAIL` | `From` address on contact emails. Must be on a domain verified in Resend. Defaults to `Portfolio <contact@isaackjoshua.com>`, which the verified `isaackjoshua.com` covers. | No |
 | `CONTACT_TO_EMAIL` | Destination inbox. Defaults to `isaackjoshua23@gmail.com`. | No |
 
 ### Contact form behaviour without a key

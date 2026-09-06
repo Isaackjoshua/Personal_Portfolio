@@ -8,7 +8,19 @@ export const runtime = "nodejs";
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 
-const DEFAULT_FROM = "Portfolio <onboarding@resend.dev>";
+/**
+ * Who the notification appears to come from, and where it lands.
+ *
+ * `isaackjoshua.com` is verified in Resend, so mail may be sent from any
+ * address on it — this one exists purely as a From header and is never read.
+ * Replies do not go here: `replyTo` below is set to the visitor's own address,
+ * so hitting reply in the inbox answers them directly.
+ *
+ * Both are overridable by env var, but the defaults are the production values
+ * rather than placeholders: a deploy with only RESEND_API_KEY set is a working
+ * deploy.
+ */
+const DEFAULT_FROM = "Portfolio <contact@isaackjoshua.com>";
 const DEFAULT_TO = "isaackjoshua23@gmail.com";
 
 /**
