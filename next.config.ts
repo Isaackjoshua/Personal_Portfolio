@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+import { siteConfig } from "./src/lib/site";
+
 /**
  * Applied to every route. Nothing here needs a per-page exception, so the
  * whole set is attached with a single wildcard matcher.
@@ -32,6 +34,41 @@ const nextConfig: NextConfig = {
      * a custom loader pointed at Cloudflare Images (a paid zone feature).
      */
     unoptimized: true,
+  },
+  /**
+   * `isaackjoshua.com` and `www.isaackjoshua.com` are both attached to this
+   * Worker, so without this every page would answer on two hostnames. That
+   * splits inbound links between them and leaves search engines to guess which
+   * one is the real site. The apex is the canonical host — it is what
+   * `siteConfig.url` feeds into canonical links, Open Graph URLs and the
+   * sitemap — so `www` permanently redirects to it, path and query intact.
+   *
+   * Static assets are served straight off the Workers assets binding and never
+   * reach this routing layer, so a `www` request for `/_next/static/...` is
+   * answered rather than redirected. That is harmless: those URLs are
+   * referenced by pages that have already been redirected, never shared.
+   */
+  async redirects() {
+    const canonical = new URL(siteConfig.url);
+    return [
+      // Two rules rather than one, and the order matters. `/:path*` does match
+      // the bare root, but with zero segments captured Next emits the
+      // placeholder literally — `www.isaackjoshua.com/` would send visitors to
+      // `https://isaackjoshua.com/:path*`. Rules are evaluated top down, so the
+      // root is claimed by its own rule before the wildcard can mangle it.
+      {
+        source: "/",
+        has: [{ type: "host" as const, value: `www.${canonical.host}` }],
+        destination: canonical.origin,
+        permanent: true,
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host" as const, value: `www.${canonical.host}` }],
+        destination: `${canonical.origin}/:path*`,
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [

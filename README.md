@@ -278,10 +278,13 @@ Cloudflare creates the proxied DNS records and issues the TLS certificate
 itself — there is no CNAME to copy by hand and no separate certificate step.
 Propagation is usually under a minute.
 
-To send `www` to the apex rather than serving both, add a **Redirect Rule**
-under **Rules → Redirect Rules** on the zone: match hostname
-`www.isaackjoshua.com`, dynamic redirect to
-`concat("https://isaackjoshua.com", http.request.uri.path)`, status 301.
+Both hostnames must be attached, but only the apex is canonical: `www`
+permanently redirects to it via `redirects()` in `next.config.ts`, which derives
+both hostnames from `siteConfig.url` so there is one place to change if the
+domain ever does. Static assets are served straight off the assets binding and
+never reach that routing layer, so a `www` request for `/_next/static/...` or
+the CV PDF is answered rather than redirected — those URLs are only ever
+referenced by pages that have already been redirected.
 
 ### What the Workers runtime changes
 
