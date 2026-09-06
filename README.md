@@ -90,6 +90,27 @@ flooding, not a determined sender. Cloudflare's rate-limiting binding or a
 Durable Object is the upgrade if abuse becomes a problem; only `rateLimit()` in
 `src/app/api/contact/route.ts` would change.
 
+### Mail on isaackjoshua.com
+
+Two different products, in two directions, which is easy to conflate:
+
+- **Outbound** is Resend. `isaackjoshua.com` is verified there, and Resend put
+  its SPF and bounce MX on the `send.` subdomain with a DKIM key at
+  `resend._domainkey`. That is what lets the form send as
+  `contact@isaackjoshua.com`.
+- **Inbound** is Cloudflare Email Routing, enabled on the zone with a literal
+  rule forwarding `contact@isaackjoshua.com` to the personal inbox. Without it
+  that address would be a From header pointing at nothing, and anyone replying
+  to the notification directly rather than using the reply-to would bounce.
+
+They coexist because Resend's records sit on a subdomain and Email Routing's MX
+and SPF sit on the apex — the two never contend for the same name. Anything
+that moves Resend onto apex records would collide, since a domain may carry only
+one SPF record.
+
+Inspect or change the routing side with `npx wrangler email routing settings`,
+`... rules list`, and `... addresses list`.
+
 ---
 
 ## Project structure
