@@ -55,10 +55,4 @@ export const education: Education[] = [
     period: "2023 — 2026",
     note: "Expected graduation 2026",
   },
-  {
-    qualification: "ACSEE",
-    institution: "Kongwa Secondary School",
-    location: "Dodoma",
-    period: "2021 — 2023",
-  },
 ];

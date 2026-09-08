@@ -85,15 +85,6 @@ export function Footer() {
               className="text-muted transition-colors hover:text-accent"
             >
               Next.js
-            </a>{" "}
-            · Deployed on{" "}
-            <a
-              href="https://vercel.com"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="text-muted transition-colors hover:text-accent"
-            >
-              Vercel
             </a>
           </p>
         </div>
