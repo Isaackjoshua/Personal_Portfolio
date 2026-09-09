@@ -39,7 +39,7 @@ function body(): string {
 
   if (current) {
     lines.push(
-      `Currently ${current.title.toLowerCase()} at the ${current.organisation}, ${current.period.toLowerCase()}. ${current.summary}`,
+      `Currently ${current.title.toLowerCase()} at the ${current.organisation} (${current.period}). ${current.summary}`,
       "",
     );
   }
