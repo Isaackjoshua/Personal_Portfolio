@@ -7,8 +7,17 @@ import { siteConfig } from "@/lib/site";
 import { jsonLd } from "@/lib/utils";
 import { openGraphImage } from "./shared-metadata";
 
+/**
+ * Shorter than `siteConfig.description`, which runs to 250 characters. Google
+ * truncates a search snippet around 160, so the long form was being cut
+ * mid-clause. The full version still feeds Open Graph and the Person schema
+ * below, where there is no such limit — this trims only where it costs.
+ */
+const metaDescription =
+  "ML engineer in Dar es Salaam building end-to-end AI systems — offline inference, agentic tooling, and the backends that carry them to production.";
+
 export const metadata: Metadata = {
-  description: siteConfig.description,
+  description: metaDescription,
   alternates: { canonical: "/" },
   openGraph: {
     ...openGraphImage,
