@@ -18,6 +18,22 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",
   },
+  /**
+   * After one HTTPS response the browser refuses to speak plain HTTP to this
+   * domain for two years, so a visitor who types the bare hostname never makes
+   * the redirectable request that a network attacker could intercept.
+   *
+   * `includeSubDomains` covers `send.` and anything added later.
+   * `preload` opts into the browser-shipped list, which closes the very first
+   * visit as well — submit at hstspreload.org once this has been live a while.
+   * Both are hard to walk back: the header must keep being served for the whole
+   * max-age, and removal from the preload list takes months. That is the point
+   * of the mechanism, and this domain serves nothing over plain HTTP.
+   */
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
+  },
 ];
 
 const nextConfig: NextConfig = {
