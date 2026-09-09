@@ -14,6 +14,7 @@ const description =
 export const metadata: Metadata = {
   title: "Experience",
   description,
+  alternates: { canonical: "/experience" },
   openGraph: {
     title: `Experience · ${siteConfig.shortName}`,
     description,
