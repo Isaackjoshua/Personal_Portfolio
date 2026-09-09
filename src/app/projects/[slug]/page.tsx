@@ -87,11 +87,45 @@ export default async function ProjectPage({ params }: Params) {
     ],
   };
 
+  /**
+   * The breadcrumb describes where the page sits; this describes what it is
+   * about. Without it a case study is just prose to a crawler — the stack,
+   * the year, the author and the repository are all on the page but only as
+   * styled text.
+   *
+   * `SoftwareSourceCode` rather than the looser `CreativeWork`: every project
+   * here is code with a public repository, and the narrower type is what
+   * carries `programmingLanguage` and `codeRepository`.
+   */
+  const projectJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: project.name,
+    description: project.description,
+    abstract: project.summary,
+    url: `${siteConfig.url}/projects/${project.slug}`,
+    codeRepository: project.github,
+    programmingLanguage: project.stack,
+    keywords: [project.domain, ...project.stack].join(", "),
+    dateCreated: project.year,
+    creativeWorkStatus: project.status,
+    author: {
+      "@type": "Person",
+      "@id": `${siteConfig.url}/#person`,
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+  };
+
   return (
     <article className="pb-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(projectJsonLd) }}
       />
 
       <header className="relative overflow-hidden border-b border-line-soft">

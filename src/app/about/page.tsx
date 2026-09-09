@@ -7,7 +7,9 @@ import { QuickFacts } from "@/components/about/quick-facts";
 import { ButtonLink, buttonClasses } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { PageHeader, Section } from "@/components/ui/section";
-import { siteConfig } from "@/lib/site";
+import { languages, siteConfig } from "@/lib/site";
+import { roles } from "@/lib/data/experience";
+import { jsonLd } from "@/lib/utils";
 import { openGraphImage } from "../shared-metadata";
 
 const description =
@@ -26,12 +28,54 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * The homepage carries a `Person`; this is the page that actually evidences it
+ * — the role, the employer, the degree, the languages. `ProfilePage` is the
+ * type search engines and answer engines expect for "this page is about a
+ * person", and it names `mainEntity` so the two descriptions of the same human
+ * are linked rather than competing.
+ *
+ * `@id` is the homepage Person's URL, which is how a crawler knows these are
+ * one identity across two pages instead of two people who share a name.
+ */
+const profileJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  mainEntity: {
+    "@type": "Person",
+    "@id": `${siteConfig.url}/#person`,
+    name: siteConfig.name,
+    jobTitle: siteConfig.role,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    email: siteConfig.email,
+    sameAs: [siteConfig.socials.github, siteConfig.socials.linkedin],
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Dar es Salaam",
+      addressCountry: "TZ",
+    },
+    knowsLanguage: languages.map((language) => language.name),
+    alumniOf: {
+      "@type": "CollegeOrUniversity",
+      name: "St. Joseph University in Tanzania",
+    },
+    worksFor: roles
+      .filter((role) => role.current)
+      .map((role) => ({ "@type": "Organization", name: role.organisation })),
+  },
+};
+
 const inlineLink =
   "link-underline font-medium text-accent transition-colors duration-200 hover:text-accent-hi";
 
 export default function AboutPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(profileJsonLd) }}
+      />
       <PageHeader
         eyebrow="about"
         title="Engineering, end to end"

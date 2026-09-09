@@ -31,6 +31,9 @@ export const metadata: Metadata = {
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
+  // Stable identifier, referenced by the ProfilePage on /about so both
+  // descriptions resolve to one person rather than two who share a name.
+  "@id": `${siteConfig.url}/#person`,
   name: siteConfig.name,
   jobTitle: siteConfig.role,
   description: siteConfig.description,

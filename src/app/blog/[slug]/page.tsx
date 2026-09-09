@@ -115,6 +115,7 @@ export default async function PostPage({ params }: Params) {
     url: `${siteConfig.url}/blog/${post.slug}`,
     author: {
       "@type": "Person",
+      "@id": `${siteConfig.url}/#person`,
       name: siteConfig.name,
       url: siteConfig.url,
     },
