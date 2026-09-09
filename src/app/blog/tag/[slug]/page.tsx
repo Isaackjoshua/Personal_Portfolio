@@ -6,6 +6,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { PageHeader, Section } from "@/components/ui/section";
 import { getAllTags, getPostsByTag, getTagName } from "@/lib/blog";
 import { siteConfig } from "@/lib/site";
+import { openGraphImage } from "../../../shared-metadata";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -30,6 +31,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description,
     alternates: { canonical: `/blog/tag/${slug}` },
     openGraph: {
+      ...openGraphImage,
       type: "website",
       url: `${siteConfig.url}/blog/tag/${slug}`,
       title: `${name} — posts`,

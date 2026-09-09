@@ -6,6 +6,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { PageHeader, Section } from "@/components/ui/section";
 import { skillGroups } from "@/lib/data/skills";
 import { languages } from "@/lib/site";
+import { openGraphImage } from "../shared-metadata";
 
 const description =
   "Machine learning, backend services, computer vision, data work and cross-platform delivery — the tools and techniques behind the projects, grouped by capability.";
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/skills" },
   openGraph: {
+    ...openGraphImage,
     title: "Skills · Isaack Joshua",
     description,
   },

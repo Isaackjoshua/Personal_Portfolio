@@ -14,6 +14,7 @@ import {
 } from "@/lib/blog";
 import { siteConfig } from "@/lib/site";
 import { jsonLd } from "@/lib/utils";
+import { openGraphImage, twitterImage } from "../../shared-metadata";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -36,6 +37,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description: post.description,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
+      ...openGraphImage,
       type: "article",
       url: `${siteConfig.url}/blog/${post.slug}`,
       title: post.title,
@@ -45,7 +47,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       tags: post.tags,
     },
     twitter: {
-      card: "summary_large_image",
+      ...twitterImage,
       title: post.title,
       description: post.description,
     },

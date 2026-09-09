@@ -7,6 +7,7 @@ import { PageHeader, Section } from "@/components/ui/section";
 import { projects } from "@/lib/data/projects";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
+import { openGraphImage } from "../shared-metadata";
 
 const description =
   "Machine learning, backend, desktop, and mobile systems built by Isaack Joshua Lukumay — each one written up with the engineering decisions behind it.";
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/projects" },
   openGraph: {
+    ...openGraphImage,
     type: "website",
     url: `${siteConfig.url}/projects`,
     title: "Projects",

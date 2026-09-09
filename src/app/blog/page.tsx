@@ -5,6 +5,7 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { PageHeader, Section } from "@/components/ui/section";
 import { getAllPosts } from "@/lib/blog";
 import { siteConfig } from "@/lib/site";
+import { openGraphImage } from "../shared-metadata";
 
 const description =
   "Notes on machine learning engineering, deployment, and the parts of a system that decide whether a model ever reaches anyone.";
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/blog" },
   openGraph: {
+    ...openGraphImage,
     type: "website",
     url: `${siteConfig.url}/blog`,
     title: "Blog",

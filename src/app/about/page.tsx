@@ -8,6 +8,7 @@ import { ButtonLink, buttonClasses } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { PageHeader, Section } from "@/components/ui/section";
 import { siteConfig } from "@/lib/site";
+import { openGraphImage } from "../shared-metadata";
 
 const description =
   "Isaack Joshua Lukumay — machine learning engineer and software developer based in Dar es Salaam, available for remote work worldwide and open to relocation. Final-year computer science student, ML intern at the ETH Lab at MUHAS, building AI systems that run offline and in production.";
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/about" },
   openGraph: {
+    ...openGraphImage,
     title: `About — ${siteConfig.name}`,
     description,
     url: "/about",

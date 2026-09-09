@@ -4,6 +4,7 @@ import { ContactForm } from "@/components/contact/contact-form";
 import { Reveal } from "@/components/ui/reveal";
 import { PageHeader, Section } from "@/components/ui/section";
 import { siteConfig } from "@/lib/site";
+import { openGraphImage } from "../shared-metadata";
 
 const description =
   "Get in touch with Isaack Joshua Lukumay about machine learning, backend, desktop, or mobile work — or about anything else worth building.";
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/contact" },
   openGraph: {
+    ...openGraphImage,
     type: "website",
     url: `${siteConfig.url}/contact`,
     title: "Contact",

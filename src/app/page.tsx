@@ -5,11 +5,13 @@ import { FeaturedWork } from "@/components/home/featured-work";
 import { Hero } from "@/components/home/hero";
 import { siteConfig } from "@/lib/site";
 import { jsonLd } from "@/lib/utils";
+import { openGraphImage } from "./shared-metadata";
 
 export const metadata: Metadata = {
   description: siteConfig.description,
   alternates: { canonical: "/" },
   openGraph: {
+    ...openGraphImage,
     type: "website",
     url: siteConfig.url,
     title: `${siteConfig.name} — ${siteConfig.role}`,

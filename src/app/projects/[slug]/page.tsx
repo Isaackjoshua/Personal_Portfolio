@@ -12,6 +12,7 @@ import { TerminalWindow } from "@/components/ui/terminal";
 import { getProject, projects } from "@/lib/data/projects";
 import { siteConfig } from "@/lib/site";
 import { jsonLd } from "@/lib/utils";
+import { openGraphImage } from "../../shared-metadata";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -33,6 +34,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     description: project.summary,
     alternates: { canonical: `/projects/${project.slug}` },
     openGraph: {
+      ...openGraphImage,
       type: "article",
       url: `${siteConfig.url}/projects/${project.slug}`,
       title: `${project.name} — ${project.domain}`,

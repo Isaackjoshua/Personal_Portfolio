@@ -7,6 +7,7 @@ import { Reveal } from "@/components/ui/reveal";
 import { PageHeader, Section, SectionHeading } from "@/components/ui/section";
 import { education, roles } from "@/lib/data/experience";
 import { siteConfig } from "@/lib/site";
+import { openGraphImage } from "../shared-metadata";
 
 const description =
   "Machine learning work at the Emerging Technologies for Healthcare Lab, MUHAS, and the Computer Science degree running alongside it — roles, dates, tools, and what shipped.";
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
   description,
   alternates: { canonical: "/experience" },
   openGraph: {
+    ...openGraphImage,
     title: `Experience · ${siteConfig.shortName}`,
     description,
   },
