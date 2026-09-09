@@ -45,6 +45,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       title: post.title,
       description: post.description,
       publishedTime: post.date,
+      modifiedTime: post.updated ?? post.date,
       authors: [siteConfig.name],
       tags: post.tags,
     },
@@ -110,7 +111,9 @@ export default async function PostPage({ params }: Params) {
     headline: post.title,
     description: post.description,
     datePublished: post.date,
-    dateModified: post.date,
+    // Falls back to the publication date: a post that has never been revised
+    // was, accurately, last modified when it was written.
+    dateModified: post.updated ?? post.date,
     keywords: post.tags.join(", "),
     url: `${siteConfig.url}/blog/${post.slug}`,
     author: {

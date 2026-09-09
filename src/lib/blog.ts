@@ -17,6 +17,13 @@ export type PostMeta = {
   description: string;
   /** ISO date, "YYYY-MM-DD". */
   date: string;
+  /**
+   * ISO date of the last substantive revision, from an optional `updated`
+   * frontmatter field. Absent when a post has not been revised — deliberately
+   * not defaulted to `date`, so that "unchanged since publication" and
+   * "revised on the day it was published" stay distinguishable.
+   */
+  updated?: string;
   tags: string[];
   /** e.g. "6 min read" */
   readingTime: string;
@@ -83,6 +90,21 @@ function parseFile(file: string): Post {
     );
   }
 
+  if (
+    data.updated !== undefined &&
+    Number.isNaN(new Date(data.updated).getTime())
+  ) {
+    throw new Error(
+      `content/blog/${file}: "updated" is not a real calendar date ("${data.updated}").`,
+    );
+  }
+
+  if (data.updated !== undefined && data.updated < data.date) {
+    throw new Error(
+      `content/blog/${file}: "updated" (${data.updated}) precedes "date" (${data.date}).`,
+    );
+  }
+
   const minutes = readingTime(content).minutes;
 
   return {
@@ -90,6 +112,7 @@ function parseFile(file: string): Post {
     title: data.title,
     description: data.description,
     date: data.date,
+    updated: data.updated,
     tags: (data.tags as string[]).map((tag) => tag.trim()),
     readingTime: `${Math.max(1, Math.ceil(minutes))} min read`,
     draft: data.draft === true,
@@ -135,6 +158,7 @@ function toMeta(post: Post): PostMeta {
     title: post.title,
     description: post.description,
     date: post.date,
+    updated: post.updated,
     tags: post.tags,
     readingTime: post.readingTime,
     draft: post.draft,

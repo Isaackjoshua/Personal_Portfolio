@@ -33,7 +33,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
   /** Newest post date — used as the freshness signal for the blog index. */
-  const blogUpdated = posts.length > 0 ? new Date(posts[0].date) : now;
+  const blogUpdated =
+    posts.length > 0
+      ? new Date(
+          posts
+            .map((post) => post.updated ?? post.date)
+            .reduce((latest, date) => (date > latest ? date : latest)),
+        )
+      : now;
 
   const home: SitemapEntry = {
     url: url("/"),
@@ -58,7 +65,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const postRoutes: SitemapEntry[] = posts.map((post) => ({
     url: url(`/blog/${post.slug}`),
-    lastModified: new Date(post.date),
+    lastModified: new Date(post.updated ?? post.date),
     changeFrequency: "yearly",
     priority: 0.7,
   }));

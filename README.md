@@ -180,19 +180,27 @@ title: "Post title"
 description: "One sentence used in the listing, meta description and OG card."
 date: "2026-01-15"
 tags: ["ML Engineering", "Deployment"]
+updated: "2026-03-02" # optional
 draft: false
 ---
 
 Body content starts here.
 ```
 
-All five frontmatter fields are validated at build time. A missing field or a
+All five required frontmatter fields are validated at build time. A missing field or a
 malformed date fails the build with the offending filename, so a broken post can
 never render blank.
 
 - The filename becomes the slug: `my-post.mdx` → `/blog/my-post`.
 - Reading time is computed automatically.
 - Tags generate their own pages at `/blog/tag/[slug]`.
+- `updated` is optional. Set it when a post changes substantively and it becomes
+  the `dateModified` in the article's structured data and the post's
+  `lastModified` in the sitemap — the signal that tells a crawler the page is
+  maintained rather than abandoned. Leave it off otherwise: an `updated` equal
+  to `date` on every post is noise, and search engines discount a freshness
+  claim the content does not support. It is validated too, and must not precede
+  `date`.
 - `draft: true` hides a post from listings, tags and the sitemap, but it remains
   reachable by direct URL with a visible draft banner.
 
