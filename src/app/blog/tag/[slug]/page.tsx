@@ -30,6 +30,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: `${name} — posts`,
     description,
     alternates: { canonical: `/blog/tag/${slug}` },
+    /**
+     * These pages exist to help a reader browse, not to rank. Each is a
+     * heading and a list of post links — around 70 words, and mostly the same
+     * words as the neighbouring tags. Indexed, they are seven near-duplicates
+     * competing with the posts they point at.
+     *
+     * `follow` is the important half: crawlers still walk these links and
+     * reach every post through them. Only the listing page itself stays out
+     * of the index.
+     */
+    robots: { index: false, follow: true },
     openGraph: {
       ...openGraphImage,
       type: "website",

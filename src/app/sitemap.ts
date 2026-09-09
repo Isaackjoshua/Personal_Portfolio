@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllPosts, getAllTags } from "@/lib/blog";
+import { getAllPosts } from "@/lib/blog";
 import { projects } from "@/lib/data/projects";
 import { navItems, siteConfig } from "@/lib/site";
 
@@ -30,7 +30,6 @@ const sectionPriority: Record<string, number> = {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = getAllPosts();
-  const tags = getAllTags();
   const now = new Date();
 
   /** Newest post date — used as the freshness signal for the blog index. */
@@ -64,12 +63,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  const tagRoutes: SitemapEntry[] = tags.map((tag) => ({
-    url: url(`/blog/tag/${tag.slug}`),
-    lastModified: blogUpdated,
-    changeFrequency: "weekly",
-    priority: 0.4,
-  }));
-
-  return [home, ...sections, ...projectRoutes, ...postRoutes, ...tagRoutes];
+  /**
+   * Tag listings are deliberately absent. They are `noindex` (see
+   * `blog/tag/[slug]/page.tsx`), and a sitemap is a request to index — listing
+   * them would hand crawlers two contradicting instructions about the same URL.
+   * The posts they link to are all here in their own right.
+   */
+  return [home, ...sections, ...projectRoutes, ...postRoutes];
 }
