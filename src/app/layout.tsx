@@ -21,7 +21,17 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
     default: `${siteConfig.name} — ${siteConfig.role}`,
-    template: `%s · ${siteConfig.shortName}`,
+    /**
+     * Search results give a title around 60 characters before truncating.
+     * `Skills · Isaack Joshua` used 22 of them and said nothing a searcher
+     * could match on beyond the name, which the site already ranks for. The
+     * role carries the terms someone hiring actually types.
+     *
+     * Page titles that are already long — post and project names — pass
+     * through this template too, so keep the suffix short enough that they
+     * survive it.
+     */
+    template: `%s · ${siteConfig.shortName} — ${siteConfig.role}`,
   },
   description: siteConfig.description,
   keywords: [

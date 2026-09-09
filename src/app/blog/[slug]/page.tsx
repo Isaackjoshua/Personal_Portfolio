@@ -33,7 +33,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!post) return { title: "Post not found" };
 
   return {
-    title: post.title,
+    // Already descriptive and long. The role suffix from the root template
+    // would only push these past the ~60 characters a result shows.
+    title: { absolute: `${post.title} · ${siteConfig.shortName}` },
     description: post.description,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {

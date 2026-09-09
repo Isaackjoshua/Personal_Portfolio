@@ -30,7 +30,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!project) return { title: "Project not found" };
 
   return {
-    title: project.name,
+    // The domain says more to a searcher than the role suffix the root
+    // template would append, and costs fewer characters.
+    title: { absolute: `${project.name} — ${project.domain} · ${siteConfig.shortName}` },
     description: project.summary,
     alternates: { canonical: `/projects/${project.slug}` },
     openGraph: {
