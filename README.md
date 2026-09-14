@@ -4,7 +4,7 @@ The personal site of **Isaack Joshua Lukumay**, a machine learning engineer and
 software developer in Dar es Salaam, Tanzania. It is a static-first Next.js
 application: a hero and capability overview, five project case studies, a
 skills and experience record, an MDX blog, and a working contact form. Content
-lives in typed data modules and MDX files in this repository — there is no CMS.
+lives in typed data modules and MDX files in this repository — there is no CMS
 and no database.
 
 **Live:** <https://isaackjoshua.com> — deployed to Cloudflare Workers.
