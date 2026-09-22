@@ -9,7 +9,7 @@ import { siteConfig } from "@/lib/site";
 const meta = [
   { label: "role", value: "ML engineer · software developer" },
   { label: "now", value: "ML Intern — ETH Lab, MUHAS" },
-  { label: "study", value: "BSc Computer Science — final year" },
+  { label: "study", value: "BSc Computer Science" },
 ];
 
 export function Hero() {
