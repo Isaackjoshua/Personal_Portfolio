@@ -31,7 +31,7 @@ export default function ExperiencePage() {
       <PageHeader
         eyebrow="experience"
         title="Experience"
-        lead="Applied machine learning inside a health-research lab in Dar es Salaam, alongside a final-year Computer Science degree. Dates, tools, and the work itself."
+        lead="Applied machine learning inside a health-research lab in Dar es Salaam, alongside a Computer Science degree. Dates, tools, and the work itself."
       >
         {currentRole && (
           <dl className="flex flex-wrap gap-x-10 gap-y-5 font-mono text-xs">
