@@ -85,7 +85,7 @@ export function CvDocument() {
         <SectionTitle>Profile</SectionTitle>
         <p className="mt-4 text-sm leading-relaxed text-muted">
           {
-            "Machine learning engineer and software developer who builds end-to-end systems, not just models. Work spans ML/AI, backend engineering, cross-platform desktop applications and mobile, with a consistent focus on getting systems into real use — offline and on-device inference, explicit safety boundaries, and modular architecture that survives a second use case. Final-year Computer Science student at St. Joseph University in Tanzania and machine learning intern at the Emerging Technologies for Healthcare Lab, MUHAS."
+            "Machine learning engineer and software developer who builds end-to-end systems, not just models. Work spans ML/AI, backend engineering, cross-platform desktop applications and mobile, with a consistent focus on getting systems into real use — offline and on-device inference, explicit safety boundaries, and modular architecture that survives a second use case. Computer Science graduate of St. Joseph University in Tanzania and machine learning intern at the Emerging Technologies for Healthcare Lab, MUHAS."
           }
         </p>
 
