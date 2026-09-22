@@ -53,6 +53,5 @@ export const education: Education[] = [
     qualification: "BSc (Hons) Computer Science",
     institution: "St. Joseph University in Tanzania",
     period: "2023 — 2026",
-    note: "Expected graduation 2026",
   },
 ];
