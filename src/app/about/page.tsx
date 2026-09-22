@@ -110,11 +110,10 @@ export default function AboutPage() {
                 and stay simple enough for someone else to maintain.
               </p>
               <p>
-                I am in the final year of a BSc in Computer Science at St.
-                Joseph University in Tanzania, graduating in 2026. The degree
-                gave me the fundamentals. The rest came from building things
-                that had to survive being used by someone who did not write
-                them.
+                I am a BSc Computer Science graduate of St. Joseph University in
+                Tanzania. The degree gave me the fundamentals. The rest came
+                from building things that had to survive being used by someone
+                who did not write them.
               </p>
               <p>
                 Since March 2025 I have been a machine learning intern at the
