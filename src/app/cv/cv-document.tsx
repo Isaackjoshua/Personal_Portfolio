@@ -199,11 +199,14 @@ export function CvDocument() {
                   {/*
                    * Printed as a readable URL rather than a link: on paper a
                    * hyperlink is invisible, and the whole point of the line is
-                   * that someone can go and check the credential.
+                   * that someone can go and look the credential up. A hosted
+                   * copy is a site-relative path, so it needs the host bolted
+                   * on to be typeable from a printed page.
                    */}
-                  {entry.url && (
+                  {(entry.url ?? entry.document) && (
                     <p className="mt-0.5 font-mono text-xs text-faint">
-                      {entry.url.replace(/^https?:\/\//, "")}
+                      {(entry.url ?? `${siteConfig.url}${entry.document}`)
+                        .replace(/^https?:\/\//, "")}
                     </p>
                   )}
                 </section>

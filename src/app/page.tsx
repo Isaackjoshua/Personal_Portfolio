@@ -3,6 +3,7 @@ import { CapabilityStrip } from "@/components/home/capability-strip";
 import { ClosingCta } from "@/components/home/closing-cta";
 import { FeaturedWork } from "@/components/home/featured-work";
 import { Hero } from "@/components/home/hero";
+import { certifications } from "@/lib/data/experience";
 import { siteConfig } from "@/lib/site";
 import { jsonLd } from "@/lib/utils";
 import { openGraphImage } from "./shared-metadata";
@@ -51,6 +52,29 @@ const personJsonLd = {
     name: "St. Joseph University in Tanzania",
   },
   knowsLanguage: ["en", "sw"],
+  /**
+   * Makes the certifications machine-readable rather than only visible. Search
+   * and answer engines read `hasCredential` directly; without it a credential
+   * is just styled text on /experience that a crawler has to infer.
+   *
+   * Built from the same array the pages render, so a new entry lands here too.
+   * `url` points at whatever evidence exists — issuer verification first, the
+   * hosted copy otherwise — and is omitted when there is neither, rather than
+   * emitting an empty string.
+   */
+  hasCredential: certifications.map((certification) => ({
+    "@type": "EducationalOccupationalCredential",
+    name: certification.name,
+    credentialCategory: "certificate",
+    recognizedBy: { "@type": "Organization", name: certification.issuer },
+    ...(certification.url ?? certification.document
+      ? {
+          url:
+            certification.url ??
+            `${siteConfig.url}${certification.document}`,
+        }
+      : {}),
+  })),
 };
 
 export default function HomePage() {

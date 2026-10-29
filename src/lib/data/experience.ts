@@ -70,12 +70,20 @@ export type Certification = {
    */
   expires?: string;
   /**
-   * The issuer's own verification page for this credential. Given one, the
-   * card's title becomes a link, which is the only thing that makes a listed
-   * certificate checkable by a reader.
+   * The issuer's own verification page for this credential — the strong form
+   * of proof, because the claim is checked against the body that made it.
    */
   url?: string;
-  /** Shown as plain text when the issuer gives an ID but no verifiable link. */
+  /**
+   * A copy of the certificate hosted here, under `public/certificates/`. The
+   * weak form: it shows the document but proves nothing on its own, since it
+   * is served from this site rather than the issuer's. Kept separate from
+   * `url` so the distinction survives — the card says "verify with the issuer"
+   * for one and "view certificate" for the other, and swapping a self-hosted
+   * PDF for a real verification link later is a one-field change.
+   */
+  document?: string;
+  /** Shown as plain text when there is neither a link nor a hosted copy. */
   credentialId?: string;
 };
 
@@ -87,4 +95,24 @@ export type Certification = {
  * Add entries newest first — neither site sorts, so the order here is the
  * order a reader sees.
  */
-export const certifications: Certification[] = [];
+export const certifications: Certification[] = [
+  {
+    name: "Open Science 101",
+    issuer: "NASA",
+    issued: "October 2026",
+    document: "/certificates/nasa-open-science-101.pdf",
+  },
+  {
+    name: "Open Science Essentials",
+    issuer: "NASA",
+    issued: "October 2026",
+    document: "/certificates/nasa-open-science-essentials.pdf",
+  },
+  {
+    name: "Machine Learning Virtual Internship",
+    issuer: "CodeAlpha",
+    issued: "April 2026",
+    document: "/certificates/codealpha-machine-learning-internship.pdf",
+    credentialId: "CA/DF1/31259",
+  },
+];

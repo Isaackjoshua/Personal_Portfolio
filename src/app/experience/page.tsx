@@ -94,7 +94,7 @@ export default function ExperiencePage() {
             index="03"
             eyebrow="certifications"
             title="Certifications"
-            description="Credentials earned alongside the degree and the lab work, each verifiable with the issuer."
+            description="Credentials earned alongside the degree and the lab work. Each card opens the certificate itself."
           />
           <CertificationList
             items={certifications}
