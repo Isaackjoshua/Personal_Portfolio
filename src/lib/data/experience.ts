@@ -56,3 +56,35 @@ export const education: Education[] = [
     note: "CGPA 4.6 / 5.0",
   },
 ];
+
+export type Certification = {
+  name: string;
+  /** The body that awarded it — "DeepLearning.AI", "AWS", "Google". */
+  issuer: string;
+  /** When it was awarded. Year alone is fine: "2026" or "June 2026". */
+  issued: string;
+  /**
+   * Only for credentials that lapse. Most course certificates do not, and an
+   * invented expiry is worse than none — leave it off unless the issuer states
+   * one.
+   */
+  expires?: string;
+  /**
+   * The issuer's own verification page for this credential. Given one, the
+   * card's title becomes a link, which is the only thing that makes a listed
+   * certificate checkable by a reader.
+   */
+  url?: string;
+  /** Shown as plain text when the issuer gives an ID but no verifiable link. */
+  credentialId?: string;
+};
+
+/**
+ * Empty until there is something real to list. Both render sites skip their
+ * whole section when this is empty, so an unpopulated array is a safe state to
+ * ship rather than a heading with nothing under it.
+ *
+ * Add entries newest first — neither site sorts, so the order here is the
+ * order a reader sees.
+ */
+export const certifications: Certification[] = [];

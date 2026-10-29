@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { ArrowRight, Download } from "lucide-react";
+import { CertificationList } from "@/components/experience/certification-list";
 import { EducationList } from "@/components/experience/education-list";
 import { Timeline } from "@/components/experience/timeline";
 import { ButtonLink, buttonClasses } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { PageHeader, Section, SectionHeading } from "@/components/ui/section";
-import { education, roles } from "@/lib/data/experience";
+import { certifications, education, roles } from "@/lib/data/experience";
 import { siteConfig } from "@/lib/site";
 import { openGraphImage } from "../shared-metadata";
 
@@ -80,6 +81,27 @@ export default function ExperiencePage() {
         />
         <EducationList items={education} className="mt-10 max-w-4xl sm:mt-12" />
       </Section>
+
+      {/*
+        * Rendered only when there is something to list. An empty certifications
+        * array would otherwise leave a numbered heading above blank space, which
+        * reads as a page that failed to load rather than a section with nothing
+        * in it yet.
+        */}
+      {certifications.length > 0 && (
+        <Section id="certifications">
+          <SectionHeading
+            index="03"
+            eyebrow="certifications"
+            title="Certifications"
+            description="Credentials earned alongside the degree and the lab work, each verifiable with the issuer."
+          />
+          <CertificationList
+            items={certifications}
+            className="mt-10 max-w-4xl sm:mt-12"
+          />
+        </Section>
+      )}
 
       <Section className="pt-0 sm:pt-0">
         <Reveal>

@@ -1,5 +1,5 @@
 import { siteConfig, languages } from "@/lib/site";
-import { education, roles } from "@/lib/data/experience";
+import { certifications, education, roles } from "@/lib/data/experience";
 import { skillGroups } from "@/lib/data/skills";
 import { projects } from "@/lib/data/projects";
 
@@ -171,6 +171,46 @@ export function CvDocument() {
             </section>
           ))}
         </div>
+
+        {/*
+          * Skipped entirely while the list is empty, so the printed CV never
+          * carries a Certifications heading with nothing beneath it.
+          */}
+        {certifications.length > 0 && (
+          <>
+            <SectionTitle>Certifications</SectionTitle>
+            <div className="mt-4 space-y-4">
+              {certifications.map((entry) => (
+                <section
+                  key={`${entry.name}-${entry.issuer}`}
+                  className="cv-entry"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-6">
+                    <h3 className="text-base font-semibold">{entry.name}</h3>
+                    <p className="font-mono text-xs text-faint">
+                      {entry.issued}
+                      {entry.expires ? ` — ${entry.expires}` : ""}
+                    </p>
+                  </div>
+                  <p className="mt-0.5 text-sm text-muted">
+                    {entry.issuer}
+                    {entry.credentialId ? ` — ID ${entry.credentialId}` : ""}
+                  </p>
+                  {/*
+                   * Printed as a readable URL rather than a link: on paper a
+                   * hyperlink is invisible, and the whole point of the line is
+                   * that someone can go and check the credential.
+                   */}
+                  {entry.url && (
+                    <p className="mt-0.5 font-mono text-xs text-faint">
+                      {entry.url.replace(/^https?:\/\//, "")}
+                    </p>
+                  )}
+                </section>
+              ))}
+            </div>
+          </>
+        )}
 
         <SectionTitle>Languages</SectionTitle>
         <dl className="mt-4">
