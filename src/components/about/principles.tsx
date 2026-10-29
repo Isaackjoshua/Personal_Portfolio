@@ -1,4 +1,3 @@
-import { Card, CornerTicks } from "@/components/ui/card";
 import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { SectionHeading } from "@/components/ui/section";
 import { cn } from "@/lib/utils";
@@ -42,28 +41,35 @@ export function Principles({ className }: { className?: string }) {
         description="Not a methodology. Just the decisions that separate a system that survives contact with the field from one that only ever ran on a laptop."
       />
 
+      {/*
+        * Four rules are prose, not four objects to pick between, so they lost
+        * the card chrome. A rule above each one carries the separation the
+        * borders used to, and the index sits in the margin where it reads as
+        * numbering rather than as a badge.
+        */}
       <RevealGroup
         as="ul"
-        className="mt-12 grid gap-4 sm:mt-14 sm:grid-cols-2"
+        className="mt-12 grid gap-x-12 gap-y-10 sm:mt-14 sm:grid-cols-2"
         stagger={0.08}
       >
         {principles.map((principle) => (
-          <RevealItem as="li" key={principle.index} className="flex">
-            <Card interactive className="relative flex w-full flex-col p-6 sm:p-7">
-              <CornerTicks />
-              <span
-                aria-hidden
-                className="font-mono text-xs tracking-[0.18em] text-accent/70"
-              >
-                {principle.index}
-              </span>
-              <h3 className="mt-3 text-lg leading-snug text-fg sm:text-xl">
-                {principle.title}
-              </h3>
-              <p className="mt-3 font-sans text-sm leading-relaxed text-muted sm:text-[0.9375rem]">
-                {principle.body}
-              </p>
-            </Card>
+          <RevealItem
+            as="li"
+            key={principle.index}
+            className="border-t border-line-soft pt-6"
+          >
+            <span
+              aria-hidden
+              className="font-mono text-xs tracking-[0.18em] text-accent/70"
+            >
+              {principle.index}
+            </span>
+            <h3 className="mt-3 text-lg leading-snug text-pretty text-fg sm:text-xl">
+              {principle.title}
+            </h3>
+            <p className="mt-3 max-w-prose font-sans text-sm leading-relaxed text-muted sm:text-[0.9375rem]">
+              {principle.body}
+            </p>
           </RevealItem>
         ))}
       </RevealGroup>

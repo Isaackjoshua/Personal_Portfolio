@@ -6,9 +6,11 @@ import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Section, SectionHeading } from "@/components/ui/section";
 import { TagList } from "@/components/ui/tag";
 import { featuredProjects } from "@/lib/data/projects";
+import { cn } from "@/lib/utils";
 
 export function FeaturedWork() {
   const selected = featuredProjects.slice(0, 3);
+  const [lead, ...rest] = selected;
 
   return (
     <Section id="work">
@@ -19,15 +21,21 @@ export function FeaturedWork() {
         description="A teaching app that works against any model, an agent with hard limits on what it may touch, and an early-warning platform for public health. Each one shipped with the deployment constraint decided first."
       />
 
+      {/*
+        * Three equal columns is the most recognisable template layout there
+        * is, and it also lied: these projects are not equally important. The
+        * first one now takes a tall left column and the other two stack beside
+        * it, so the grid states a preference instead of hedging.
+        */}
       <RevealGroup
         as="ul"
-        className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+        className="mt-12 grid gap-5 lg:grid-cols-[1.25fr_minmax(0,1fr)] lg:grid-rows-2"
       >
-        {selected.map((project) => (
+        {[lead, ...rest].map((project, index) => (
           <RevealItem
             key={project.slug}
             as="li"
-            className="sm:last:col-span-2 lg:last:col-span-1"
+            className={index === 0 ? "lg:row-span-2" : undefined}
           >
             <Card
               as="article"
@@ -45,15 +53,29 @@ export function FeaturedWork() {
                 </p>
               </div>
 
-              <h3 className="mt-4 text-xl transition-colors duration-300 group-hover:text-accent">
+              <h3
+                className={cn(
+                  "mt-4 transition-colors duration-300 group-hover:text-accent",
+                  index === 0 ? "text-2xl sm:text-3xl" : "text-xl",
+                )}
+              >
                 {project.name}
               </h3>
 
-              <p className="mt-3 text-sm leading-relaxed text-muted">
+              <p
+                className={cn(
+                  "mt-3 leading-relaxed text-muted",
+                  index === 0 ? "max-w-md text-base" : "text-sm",
+                )}
+              >
                 {project.summary}
               </p>
 
-              <TagList items={project.stack} limit={4} className="mt-auto pt-6" />
+              <TagList
+                items={project.stack}
+                limit={index === 0 ? 6 : 3}
+                className="mt-auto pt-6"
+              />
 
               <p
                 aria-hidden
