@@ -6,7 +6,12 @@ import { Timeline } from "@/components/experience/timeline";
 import { ButtonLink, buttonClasses } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { PageHeader, Section, SectionHeading } from "@/components/ui/section";
-import { certifications, education, roles } from "@/lib/data/experience";
+import {
+  certifications,
+  education,
+  leadRole,
+  roles,
+} from "@/lib/data/experience";
 import { siteConfig } from "@/lib/site";
 import { openGraphImage } from "../shared-metadata";
 
@@ -25,7 +30,6 @@ export const metadata: Metadata = {
 };
 
 export default function ExperiencePage() {
-  const currentRole = roles.find((role) => role.current);
 
   return (
     <>
@@ -34,15 +38,15 @@ export default function ExperiencePage() {
         title="Experience"
         lead="Applied machine learning inside a health-research lab in Dar es Salaam, alongside a Computer Science degree. Dates, tools, and the work itself."
       >
-        {currentRole && (
+        {leadRole && (
           <dl className="flex flex-wrap gap-x-10 gap-y-5 font-mono text-xs">
             <div>
               <dt className="uppercase tracking-[0.14em] text-faint">Role</dt>
-              <dd className="mt-1.5 text-fg">{currentRole.title}</dd>
+              <dd className="mt-1.5 text-fg">{leadRole.title}</dd>
             </div>
             <div>
               <dt className="uppercase tracking-[0.14em] text-faint">Period</dt>
-              <dd className="mt-1.5 text-fg">{currentRole.period}</dd>
+              <dd className="mt-1.5 text-fg">{leadRole.period}</dd>
             </div>
             <div>
               <dt className="uppercase tracking-[0.14em] text-faint">
@@ -94,7 +98,7 @@ export default function ExperiencePage() {
             index="03"
             eyebrow="certifications"
             title="Certifications"
-            description="Credentials earned alongside the degree and the lab work. Each card opens the certificate itself."
+            description="Credentials earned alongside the degree and the lab work. Where a certificate exists, the title opens it."
           />
           <CertificationList
             items={certifications}

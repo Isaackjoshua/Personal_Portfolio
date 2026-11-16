@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Isaack Joshua Lukumay",
   shortName: "Isaack Joshua",
   monogram: "IJL",
-  role: "Machine Learning Engineer",
+  role: "Machine Learning & Backend Engineer",
   tagline: "I build AI systems that ship — not just score.",
   description:
     "Machine learning engineer and software developer based in Dar es Salaam, available for remote work worldwide and open to relocation. I build end-to-end AI systems — offline inference, agentic tooling, and the backends that carry them into production.",

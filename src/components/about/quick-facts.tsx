@@ -1,8 +1,15 @@
-import { education, roles } from "@/lib/data/experience";
+import { education, leadRole, roles } from "@/lib/data/experience";
 import { languages, siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-const currentRole = roles.find((role) => role.current) ?? roles[0];
+/**
+ * Every role with no end date. This used to be a single `.find()`, which was
+ * safe only while exactly one role was current — an assumption nothing in the
+ * data ever stated. There are now three, so the old code silently picked the
+ * first and pinned it to a hardcoded "ETH Lab, MUHAS", producing a title from
+ * one job beside the organisation of another.
+ */
+const currentRoles = roles.filter((role) => role.current);
 const degree = education[0];
 
 type Fact = {
@@ -10,6 +17,33 @@ type Fact = {
   value: string;
   meta?: string;
 };
+
+/**
+ * The "Currently" row of the quick-facts panel, which is a single
+ * label/value/meta line in a narrow sidebar column.
+ *
+ * Leads with one role rather than listing all three. The panel is a scan-in-
+ * two-seconds summary beside the portrait, and three wrapped organisation
+ * names would turn the shortest row into the longest. Which role leads is
+ * stated in the data (`lead`), not inferred from array order, and the count
+ * of the others is carried in `meta` so nothing is hidden — a reader who
+ * wants the full picture is told there is one and where to find it.
+ */
+function currentlyFact(): Fact {
+  const alsoRunning = currentRoles.length - 1;
+
+  return {
+    label: "Currently",
+    value: leadRole.title,
+    meta: [
+      leadRole.shortOrganisation ?? leadRole.organisation,
+      leadRole.period,
+      alsoRunning > 0 ? `+${alsoRunning} concurrent roles` : null,
+    ]
+      .filter(Boolean)
+      .join(" · "),
+  };
+}
 
 const facts: Fact[] = [
   {
@@ -27,11 +61,7 @@ const facts: Fact[] = [
     value: "ML/AI · Backend · Desktop · Mobile",
     meta: "Systems built for deployment, not demos",
   },
-  {
-    label: "Currently",
-    value: currentRole.title,
-    meta: `ETH Lab, MUHAS · ${currentRole.period}`,
-  },
+  currentlyFact(),
   {
     label: "Education",
     value: degree.qualification,
